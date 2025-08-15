@@ -47,4 +47,5 @@ gap_buffer.hpp
 
 # Build directory
 phosphor/build/
+build/
 

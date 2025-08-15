@@ -1,6 +1,7 @@
 #!/bin/bash
 
 echo "Building program..."
+
 cd phosphor
 
 cmake -B build -S .
