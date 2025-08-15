@@ -414,24 +414,20 @@ int main(int argc, const char* argv[]) {
         if (event == Event::Home)       { editor.insert_text("Home hit");  return true; }
         if (event == Event::End)        { editor.insert_text("End hit");   return true; }
         if (event == Event::Return)     { editor.insert_text("Return hit"); return true; }
-        if (event == Event::Special("\x11")) {editor.insert_text("ctrl-q hit"); return true; }
-        if (event == Event::Special("\x18")) {editor.insert_text("ctrl-s hit"); return true; }
         //if (event == Event::CtrlA)      { editor.insert_text("ctrl-a hit"); return true; }
 
-        // ctrl-q to quit editor - maps to ASCII code 17
-        /*
-        if (event == Event::Special("\x11")) {
+        // ctrl-r to quit editor
+        if (event == Event::Special({18})) {
             screen.Exit();
             return true;
         }
-        // ctrl-x to save - maps to ASCII code 24
-        if (event == Event::Special("\x13")) {
+        // ctrl-a to save 
+        if (event == Event::Special({1})) {
             if (!editor.file.empty()) {
                 editor.save();
             }
             return true;
         }
-        */
         return false;
     });
 
