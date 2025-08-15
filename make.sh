@@ -2,7 +2,7 @@
 
 echo "Building program..."
 
-cd phosphor
+#cd phosphor
 
 cmake -B build -S .
 cmake --build build
