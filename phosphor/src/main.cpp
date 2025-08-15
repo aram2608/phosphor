@@ -3,14 +3,19 @@
 #include <ftxui/component/component.hpp>
 #include <ftxui/component/event.hpp>
 #include "ftxui/screen/color.hpp"
+#include <ctime>
 #include <iostream>
 #include <filesystem>
 
 int main() {
     using namespace ftxui;
 
+    // Calculate time
+    time_t now = time(0);
+    char* dt = ctime(&now);
+
     // Creates the text boxes
-    Element document = hbox(
+    auto content = hbox(
         text("Hello world!") | color(Color::RGB(0x0d,0x0f,0x0a)) | border,
         text("Hello world!") | color(Color::RGB(0xb8,0xff,0xb8)) | border,
         text("Hello world!") | color(Color::RGB(0x5c,0xff,0x5c)) | border,
@@ -21,12 +26,24 @@ int main() {
         text("Hello world!") | color(Color::RGB(0x1a,0x2a,0x16)) | border
     );
 
+    // Heading
+    auto heading = hbox(
+        text("I am a text editor!") | color(Color::RGB(0x0d,0x0f,0x0a)) | border | flex
+    );
+
+    auto time = hbox(
+        text(dt) | color(Color::RGB(0x0d,0x0f,0x0a)) | border | flex
+    );
+
     // Creates an interactive screen, compiler deducts typing
     auto screen = ScreenInteractive::Fullscreen();
 
     // Creates the renderer for interactive components
     auto renderer = Renderer([&] {
-    return document;
+        return gridbox({
+        {heading, time},
+        {hbox(content | flex)}
+        });
     });
 
     // Catches events for interactive changes to program
