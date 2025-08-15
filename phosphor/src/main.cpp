@@ -17,6 +17,8 @@
 #include <stdexcept>
 #include <algorithm>
 
+#include <iostream>
+
 using namespace ftxui;
 
 // UTF-8 helper functions
@@ -379,7 +381,7 @@ int main(int argc, const char* argv[]) {
         status += "  |  ";
         status += "Ln " + std::to_string(caret_line + 1) + ", Col " + std::to_string(caret_col + 1);
         status += "  |  Ctrl+X:Save  Ctrl+Q:Quit";
-        auto status_line = hbox({ text(status) }) | border;
+        auto status_line = hbox({ text(status) }) | color(Color::RGB(0x0d,0x0f,0x0a)) | border;
 
         // top hud
         auto hud = gridbox({
@@ -407,21 +409,29 @@ int main(int argc, const char* argv[]) {
         }
         if (event == Event::Backspace) { editor.backspace(); return true; }
         if (event == Event::Delete)    { editor.del();       return true; }
-
+/*
         if (event == Event::ArrowLeft)  { editor.move_left();  return true; }
         if (event == Event::ArrowRight) { editor.move_right(); return true; }
         if (event == Event::ArrowUp)    { editor.move_up();    return true; }
         if (event == Event::ArrowDown)  { editor.move_down();  return true; }
         if (event == Event::Home)       { editor.move_home();  return true; }
         if (event == Event::End)        { editor.move_end();   return true; }
+*/
+        if (event == Event::ArrowLeft)  { editor.insert_text("Arrow left hit");  return true; }
+        if (event == Event::ArrowRight) { editor.insert_text("Arrow right hit"); return true; }
+        if (event == Event::ArrowUp)    { editor.insert_text("Arrow up hit");    return true; }
+        if (event == Event::ArrowDown)  { editor.insert_text("Arrow down hit");  return true; }
+        if (event == Event::Home)       { editor.insert_text("Home hit");  return true; }
+        if (event == Event::End)        { editor.insert_text("End hit");   return true; }
+        if (event == Event::Return)     { editor.insert_text("Return hit"); return true; }
 
         // ctrl-q to quit editor - maps to ASCII code 17
-        if (event == Event::Special({17})) {
+        if (event == Event::Escape) {
             screen.Exit();
             return true;
         }
         // ctrl-x to save - maps to ASCII code 24
-        if (event == Event::Special({24})) {
+        if (event == Event::Special("\x13")) {
             if (!editor.file.empty()) {
                 editor.save();
             }
