@@ -359,33 +359,38 @@ int main(int argc, const char* argv[]) {
         size_t caret_col  = editor.li.column_of(contents, editor.caret);
 
         // Creates the text boxes
-        auto content = hbox(
-            std::move(lines)
+        auto content = vbox(
+            std::move(lines) | border
         );
 
         // Heading
         auto heading = hbox(
-            text(" phosphor ") | color(Color::RGB(0x0d,0x0f,0x0a)) | border | flex
+            text(" phosphor ") | color(Color::RGB(0x0d,0x0f,0x0a)) | border
         );
 
         // Keep track of time
         auto time = hbox(
-            text(calc_time()) | color(Color::RGB(0x0d,0x0f,0x0a)) | border | flex
+            text(calc_time()) | color(Color::RGB(0x0d,0x0f,0x0a)) | border
         );
 
+        // Set the name of input file, line number, and controls
         std::string status;
-        status += editor.file.empty() ? "[No Name]" : editor.file.string();
+        status += editor.file.empty() ? "[ No Name ]" : editor.file.string();
         status += "  |  ";
         status += "Ln " + std::to_string(caret_line + 1) + ", Col " + std::to_string(caret_col + 1);
-        status += "  |  F2:Save  Ctrl+Q:Quit";
-
+        status += "  |  Ctrl+X:Save  Ctrl+Q:Quit";
         auto status_line = hbox({ text(status) }) | border;
 
-        // Return the rendered editor
-        return gridbox({
-        {heading, time, status_line},
-        {content}
+        // top hud
+        auto hud = gridbox({
+            {heading, time, status_line}
         });
+
+        // Return the rendered editor
+        return vbox(
+            hud, 
+            content
+        );
     });
 
     // Catches events for interactive changes to program
