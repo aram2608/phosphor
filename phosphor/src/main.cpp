@@ -360,12 +360,12 @@ int main(int argc, const char* argv[]) {
 
         // Heading
         auto heading = hbox(
-            text(" phosphor ") | color(Color::RGB(0x5c,0xff,0x5c)) | border
+            text(" phosphor ") | color(Color::RGB(0x6d, 0x3a, 0x5a)) | border
         );
 
         // Keep track of time
         auto time = hbox(
-            text(calc_time()) | color(Color::RGB(0x5c,0xff,0x5c)) | border
+            text(calc_time()) | color(Color::RGB(0x6d, 0x3a, 0x5a)) | border
         );
 
         // Set the name of input file, line number, and controls
@@ -374,7 +374,7 @@ int main(int argc, const char* argv[]) {
         status += "  |  ";
         status += "Ln " + std::to_string(caret_line + 1) + ", Col " + std::to_string(caret_col + 1);
         status += "  |  Ctrl+A:Save  Ctrl+R:Quit";
-        auto status_line = hbox({ text(status) }) | color(Color::RGB(0x5c,0xff,0x5c)) | border;
+        auto status_line = hbox({ text(status) }) | color(Color::RGB(0x6d, 0x3a, 0x5a)) | border;
 
         // top hud
         auto hud = gridbox({
