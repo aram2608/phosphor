@@ -414,9 +414,13 @@ int main(int argc, const char* argv[]) {
         if (event == Event::Home)       { editor.insert_text("Home hit");  return true; }
         if (event == Event::End)        { editor.insert_text("End hit");   return true; }
         if (event == Event::Return)     { editor.insert_text("Return hit"); return true; }
+        if (event == Event::Special("\x11")) {editor.insert_text("ctrl-q hit"); return true; }
+        if (event == Event::Special("\x18")) {editor.insert_text("ctrl-s hit"); return true; }
+        //if (event == Event::CtrlA)      { editor.insert_text("ctrl-a hit"); return true; }
 
         // ctrl-q to quit editor - maps to ASCII code 17
-        if (event == Event::Escape) {
+        /*
+        if (event == Event::Special("\x11")) {
             screen.Exit();
             return true;
         }
@@ -427,6 +431,7 @@ int main(int argc, const char* argv[]) {
             }
             return true;
         }
+        */
         return false;
     });
 
