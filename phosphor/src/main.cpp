@@ -360,12 +360,12 @@ int main(int argc, const char* argv[]) {
 
         // Heading
         auto heading = hbox(
-            text(" phosphor ") | color(Color::RGB(0x0d,0x0f,0x0a)) | border
+            text(" phosphor ") | color(Color::RGB(0x5c,0xff,0x5c)) | border
         );
 
         // Keep track of time
         auto time = hbox(
-            text(calc_time()) | color(Color::RGB(0x0d,0x0f,0x0a)) | border
+            text(calc_time()) | color(Color::RGB(0x5c,0xff,0x5c)) | border
         );
 
         // Set the name of input file, line number, and controls
@@ -374,16 +374,31 @@ int main(int argc, const char* argv[]) {
         status += "  |  ";
         status += "Ln " + std::to_string(caret_line + 1) + ", Col " + std::to_string(caret_col + 1);
         status += "  |  Ctrl+A:Save  Ctrl+R:Quit";
-        auto status_line = hbox({ text(status) }) | color(Color::RGB(0x0d,0x0f,0x0a)) | border;
+        auto status_line = hbox({ text(status) }) | color(Color::RGB(0x5c,0xff,0x5c)) | border;
 
         // top hud
         auto hud = gridbox({
             {heading, time, status_line}
         });
 
+        // placeholder for color options
+        auto options = gridbox({
+            {
+                text("0x0d,0x0f,0x0a") | color(Color(0x0d,0x0f,0x0a)) | border,
+                text("0xb8,0xff,0xb8") | color(Color(0xb8,0xff,0xb8)) | border,
+                text("0x5c,0xff,0x5c") | color(Color(0x5c,0xff,0x5c)) | border,
+                text("0x7e,0xf9,0xd8") | color(Color(0x7e,0xf9,0xd8)) | border,
+                text("0xa0,0xff,0xa0") | color(Color(0xa0,0xff,0xa0)) | border,
+                text("0x77,0xc7,0x77") | color(Color(0x77,0xc7,0x77)) | border,
+                text("0xcc,0xff,0x66") | color(Color(0xcc,0xff,0x66)) | border,
+                text("0x1a,0x2a,0x16") | color(Color(0x1a,0x2a,0x16)) | border
+            }
+        });
+
         // Return the rendered editor
         return vbox(
-            hud, 
+            hud,
+            options,
             content
         );
     });
