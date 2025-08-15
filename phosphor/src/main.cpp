@@ -218,64 +218,7 @@ struct Editor {
         rebuild_index();
     }
 
-    // Function to erase text from buffer
-    void backspace() {
-        if (caret == 0) return;
-        std::string s = buf.str();
-        size_t prev = utf8::prev_cp(s, caret);
-        size_t len = caret - prev;
-        buf.erase(prev, len);
-        caret = prev;
-        rebuild_index();
-    }
-
-    void move_left() {
-        if (caret == 0) return;
-        std::string s = buf.str();
-        caret = utf8::prev_cp(s, caret);
-        goal_col = li.column_of(s, caret);
-    }
-
-    void move_right() {
-        if (caret >= buf.size()) return;
-        std::string s = buf.str();
-        caret = utf8::next_cp(s, caret);
-        goal_col = li.column_of(s, caret);
-    }
-
-    void move_home() {
-        std::string s = buf.str();
-        size_t line = li.line_of(caret);
-        caret = li.byte_at_col(s, line, 0);
-        goal_col = 0;
-    }
-
-    void move_end() {
-        std::string s = buf.str();
-        size_t line = li.line_of(caret);
-        size_t i = li.byte_at_col(s, line, SIZE_MAX / 2);
-        while (i < s.size() && s[i] != '\n') i = utf8::next_cp(s, i);
-        caret = i;
-        goal_col = li.column_of(s, caret);
-    }
-
-    void move_up() {
-        std::string s = buf.str();
-        size_t line = li.line_of(caret);
-        if (line == 0) return;
-        if (goal_col == SIZE_MAX) goal_col = li.column_of(s, caret);
-        caret = li.byte_at_col(s, line - 1, goal_col);
-        if (line - 1 < top_line) top_line = line - 1;
-    }
-
-    void move_down() {
-        std::string s = buf.str();
-        size_t line = li.line_of(caret);
-        if (line + 1 >= li.line_count()) return;
-        if (goal_col == SIZE_MAX) goal_col = li.column_of(s, caret);
-        caret = li.byte_at_col(s, line + 1, goal_col);
-    }
-
+    // Function to keep text visible
     void keep_visible(int height, int margin = 2) {
         size_t line = li.line_of(caret);
         if (line < top_line + margin) {
@@ -286,13 +229,15 @@ struct Editor {
         }
     }
 
-    bool save() const {
-        if (file.empty()) return false;
-        std::ofstream out(file, std::ios::binary);
-        if (!out) return false;
-        const auto s = buf.str();
-        out.write(s.data(), (std::streamsize)s.size());
-        return (bool)out;
+    // Function to erase text from buffer
+    void backspace() {
+        if (caret == 0) return;
+        std::string s = buf.str();
+        size_t prev = utf8::prev_cp(s, caret);
+        size_t len = caret - prev;
+        buf.erase(prev, len);
+        caret = prev;
+        rebuild_index();
     }
 };
 
@@ -327,6 +272,7 @@ int main(int argc, const char* argv[]) {
 
     // Creates the renderer for interactive components
     auto renderer = Renderer([&] {
+
         // Use screen size to compute viewport
         int total_h = screen.dimy();
         int total_w = screen.dimx();
@@ -397,9 +343,9 @@ int main(int argc, const char* argv[]) {
 
         // Return the rendered editor
         return vbox(
-            hud,
-            options,
-            content
+            hud | bgcolor(Color(0x0d,0x0f,0x0a)),
+            options | bgcolor(Color(0x0d,0x0f,0x0a)),
+            content | bgcolor(Color(0x0d,0x0f,0x0a))
         );
     });
 
@@ -429,13 +375,6 @@ int main(int argc, const char* argv[]) {
             screen.Exit();
             return true;
         }
-        // ctrl-a to save 
-        if (event == Event::Special({1})) {
-            if (!editor.file.empty()) {
-                editor.save();
-            }
-            return true;
-        }
 
         // Handle text input
         if (event.is_character()) {
@@ -448,6 +387,14 @@ int main(int argc, const char* argv[]) {
                 return true;
             }
         }
+        
+        // ctrl-a to save 
+        if (event == Event::Special({1})) {editor.insert_text("ctrl a hit"); return true; }
+            /*
+            if (!editor.file.empty()) {
+                //editor.save();
+            }
+            */
         return false;
     });
 
