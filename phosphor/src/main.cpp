@@ -211,12 +211,14 @@ struct Editor {
         if (caret > buf.size()) caret = buf.size();
     }
 
+    // Function to insert text into buffer
     void insert_text(std::string_view s) {
         buf.insert(caret, s);
         caret += s.size();
         rebuild_index();
     }
 
+    // Function to erase text from buffer
     void backspace() {
         if (caret == 0) return;
         std::string s = buf.str();
@@ -371,7 +373,7 @@ int main(int argc, const char* argv[]) {
         status += editor.file.empty() ? "[ No Name ]" : editor.file.string();
         status += "  |  ";
         status += "Ln " + std::to_string(caret_line + 1) + ", Col " + std::to_string(caret_col + 1);
-        status += "  |  Ctrl+X:Save  Ctrl+Q:Quit";
+        status += "  |  Ctrl+A:Save  Ctrl+R:Quit";
         auto status_line = hbox({ text(status) }) | color(Color::RGB(0x0d,0x0f,0x0a)) | border;
 
         // top hud
@@ -388,18 +390,7 @@ int main(int argc, const char* argv[]) {
 
     // Catches events for interactive changes to program
     auto catcher = CatchEvent(renderer, [&](Event event) {
-        if (event.is_character()) {
-            char32_t ch = event.character()[0];
-            if (ch == '\r') return true;
-            if (ch == '\n') { editor.insert_text("\n"); return true; }
-            if (ch == '\t') { editor.insert_text("\t"); return true; }
-            if (ch >= 0x20) {
-                editor.insert_text(event.character());
-                return true;
-            }
-        }
-        if (event == Event::Backspace) { editor.backspace(); return true; }
-/*
+        /*
         if (event == Event::ArrowLeft)  { editor.move_left();  return true; }
         if (event == Event::ArrowRight) { editor.move_right(); return true; }
         if (event == Event::ArrowUp)    { editor.move_up();    return true; }
@@ -407,6 +398,9 @@ int main(int argc, const char* argv[]) {
         if (event == Event::Home)       { editor.move_home();  return true; }
         if (event == Event::End)        { editor.move_end();   return true; }
 */
+
+        // Handle I/O editor actions
+        if (event == Event::Backspace) { editor.backspace(); return true; }
         if (event == Event::ArrowLeft)  { editor.insert_text("Arrow left hit");  return true; }
         if (event == Event::ArrowRight) { editor.insert_text("Arrow right hit"); return true; }
         if (event == Event::ArrowUp)    { editor.insert_text("Arrow up hit");    return true; }
@@ -414,7 +408,6 @@ int main(int argc, const char* argv[]) {
         if (event == Event::Home)       { editor.insert_text("Home hit");  return true; }
         if (event == Event::End)        { editor.insert_text("End hit");   return true; }
         if (event == Event::Return)     { editor.insert_text("Return hit"); return true; }
-        //if (event == Event::CtrlA)      { editor.insert_text("ctrl-a hit"); return true; }
 
         // ctrl-r to quit editor
         if (event == Event::Special({18})) {
@@ -427,6 +420,18 @@ int main(int argc, const char* argv[]) {
                 editor.save();
             }
             return true;
+        }
+
+        // Handle text input
+        if (event.is_character()) {
+            char32_t ch = event.character()[0];
+            if (ch == '\r') return true;
+            if (ch == '\n') { editor.insert_text("\n"); return true; }
+            if (ch == '\t') { editor.insert_text("\t"); return true; }
+            if (ch >= 0x20) {
+                editor.insert_text(event.character());
+                return true;
+            }
         }
         return false;
     });
