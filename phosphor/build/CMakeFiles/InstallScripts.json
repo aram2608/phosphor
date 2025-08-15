@@ -1,0 +1,10 @@
+{
+	"InstallScripts" : 
+	[
+		"/Users/ja1473/phosphor/phosphor/build/cmake_install.cmake",
+		"/Users/ja1473/phosphor/phosphor/build/_deps/ftxui-build/cmake_install.cmake",
+		"/Users/ja1473/phosphor/phosphor/build/_deps/ftxui-build/examples/cmake_install.cmake",
+		"/Users/ja1473/phosphor/phosphor/build/_deps/ftxui-build/doc/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

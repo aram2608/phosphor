@@ -55,7 +55,7 @@ inline Decorator deco_for(Tok t, const RetroTheme& T) {
 
 // Example line renderer (replace with your tokenizer)
 inline Element render_line(const std::vector<std::pair<Tok,std::string>>& parts,
-                           const RetroTheme& T) {
+                          const RetroTheme& T) {
   std::vector<Element> segs;
   segs.reserve(parts.size());
   for (auto& [tok, text] : parts)
