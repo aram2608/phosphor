@@ -227,15 +227,6 @@ struct Editor {
         rebuild_index();
     }
 
-    void del() {
-        if (caret >= buf.size()) return;
-        std::string s = buf.str();
-        size_t next = utf8::next_cp(s, caret);
-        size_t len = next - caret;
-        buf.erase(caret, len);
-        rebuild_index();
-    }
-
     void move_left() {
         if (caret == 0) return;
         std::string s = buf.str();
@@ -408,7 +399,6 @@ int main(int argc, const char* argv[]) {
             }
         }
         if (event == Event::Backspace) { editor.backspace(); return true; }
-        if (event == Event::Delete)    { editor.del();       return true; }
 /*
         if (event == Event::ArrowLeft)  { editor.move_left();  return true; }
         if (event == Event::ArrowRight) { editor.move_right(); return true; }
