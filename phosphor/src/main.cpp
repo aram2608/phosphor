@@ -1,12 +1,15 @@
 #include <ftxui/dom/elements.hpp>
-#include <ftxui/screen/screen.hpp>
+#include <ftxui/component/screen_interactive.hpp>
+#include <ftxui/component/component.hpp>
+#include <ftxui/component/event.hpp>
 #include "ftxui/screen/color.hpp"
 #include <iostream>
+#include <filesystem>
 
 int main() {
     using namespace ftxui;
 
-    // Creates our text box
+    // Creates the text boxes
     Element document = hbox(
         text("Hello world!") | color(Color::RGB(0x0d,0x0f,0x0a)) | border,
         text("Hello world!") | color(Color::RGB(0xb8,0xff,0xb8)) | border,
@@ -18,21 +21,24 @@ int main() {
         text("Hello world!") | color(Color::RGB(0x1a,0x2a,0x16)) | border
     );
 
-    /*
-    Creates the screen:
-        Width parameter to fit full terminal size
-        Height parameter fits text
-    */
-    Screen screen = Screen::Create(
-    Dimension::Full(),
-    Dimension::Fit(document)
-    );
+    // Creates an interactive screen, compiler deducts typing
+    auto screen = ScreenInteractive::Fullscreen();
 
-    // Render and print to screen
-    Render(screen, document);
-    screen.Print();
+    // Creates the renderer for interactive components
+    auto renderer = Renderer([&] {
+    return document;
+    });
 
-    // Create new line and flush buffer
-    std::cout << '\n' << std::endl;
+    // Catches events for interactive changes to program
+    auto catcher = CatchEvent(renderer, [&](Event e) {
+        if (e == Event::ArrowUp) {
+            screen.Exit();
+            return true;
+        }
+        return false;
+    });
+
+    // The main loop to print to screen after catching events
+    screen.Loop(catcher);
     return 0;
 }

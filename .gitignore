@@ -40,6 +40,11 @@
 # debug information files
 *.dwo
 
+# Notes for implementation
 notes.cpp
+gap_buffer.cpp
+gap_buffer.hpp
 
+# Build directory
 phosphor/build/
+
