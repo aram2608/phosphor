@@ -2,7 +2,7 @@
 #include <ftxui/component/screen_interactive.hpp>
 #include <ftxui/component/component.hpp>
 #include <ftxui/component/event.hpp>
-#include "ftxui/screen/color.hpp"
+#include <ftxui/screen/color.hpp>
 
 #include <ctime>
 #include <fstream>

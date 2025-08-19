@@ -4,7 +4,9 @@
             "name": "Mac",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/Users/ja1473/dev/tools/vcpkg/packages/ftxui_arm64-osx/include/"
+                "/Users/ja1473/dev/tools/vcpkg/packages/ftxui_arm64-osx/include/",
+                "/Users/ja1473/dev/tools/vcpkg/installed/arm64-osx/include",
+                "${workspaceFolder}/phosphor/include"
             ],
             "defines": [],
             "compilerPath": "/opt/homebrew/opt/llvm/bin/clang",
