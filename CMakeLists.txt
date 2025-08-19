@@ -9,26 +9,26 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Fetch FTXUI
-include(FetchContent)
+# Find packages and config files
+find_package(raylib 3.0 REQUIRED)
+find_package(glfw3 REQUIRED)
+find_package(ftxui REQUIRED)
 
-set(FETCHCONTENT_UPDATES_DISCONNECTED ON)
-set(FETCHCONTENT_QUIET OFF)
-
-FetchContent_Declare(ftxui
-    GIT_REPOSITORY https://github.com/arthursonzogni/ftxui.git
-    GIT_TAG        v5.0.0
-    GIT_PROGRESS   TRUE
-    GIT_SHALLOW    TRUE
-    EXCLUDE_FROM_ALL
-)
-FetchContent_MakeAvailable(ftxui)
-
+# Add executables (.cpp) files
 add_executable(${PROJECT_NAME} phosphor/src/main.cpp)
-target_include_directories(${PROJECT_NAME} PRIVATE src)
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/phosphor/include)
 
 target_link_libraries(${PROJECT_NAME}
-    PRIVATE ftxui::screen
-    PRIVATE ftxui::dom
-    PRIVATE ftxui::component
+    raylib 
+    glfw
+    ftxui::screen
+    ftxui::dom
+    ftxui::component
 )
+
+# Checks if OSX and links appropriate frameworks (only required on MacOS)
+if (APPLE)
+    target_link_libraries(${PROJECT_NAME} "-framework IOKit")
+    target_link_libraries(${PROJECT_NAME} "-framework Cocoa")
+    target_link_libraries(${PROJECT_NAME} "-framework OpenGL")
+endif()
