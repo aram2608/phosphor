@@ -10,20 +10,16 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Find packages and config files
-# find_package(raylib 3.0 REQUIRED)
-# find_package(glfw3 REQUIRED)
-find_package(ftxui REQUIRED)
+find_package(raylib 3.0 REQUIRED)
+find_package(glfw3 REQUIRED)
 
 # Add executables (.cpp) files
 add_executable(${PROJECT_NAME} phosphor/src/main.cpp)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/phosphor/include)
 
 target_link_libraries(${PROJECT_NAME}
-    # raylib 
-    # glfw
-    ftxui::screen
-    ftxui::dom
-    ftxui::component
+    raylib 
+    glfw
 )
 
 # Checks if OSX and links appropriate frameworks (only required on MacOS)
