@@ -14,7 +14,10 @@ find_package(raylib 3.0 REQUIRED)
 find_package(glfw3 REQUIRED)
 
 # Add executables (.cpp) files
-add_executable(${PROJECT_NAME} phosphor/src/main.cpp)
+add_executable(${PROJECT_NAME} 
+    phosphor/src/main.cpp
+    phosphor/src/app.cpp
+)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/phosphor/include)
 
 target_link_libraries(${PROJECT_NAME}

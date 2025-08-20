@@ -1,3 +1,4 @@
+#pragma once
 #include <raylib.h>
 
 // Namespace for color pallete
@@ -11,3 +12,16 @@ namespace Palette {
     constexpr Color LimeYellow  = { 0xcc, 0xff, 0x66, 255 };
     constexpr Color DeepFern    = { 0x1a, 0x2a, 0x16, 255 };
 }
+
+// App class to contain resources used during exectution of program
+class App {
+    public:
+        // Constructor
+        App();
+        // Deconstructor
+        ~App();
+
+        // Publically available resources
+        Font font;
+    private:
+};

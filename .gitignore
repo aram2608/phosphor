@@ -51,4 +51,4 @@ theme_idea.hpp
 phosphor/build/
 build/
 
-.vscode
+.vscode/

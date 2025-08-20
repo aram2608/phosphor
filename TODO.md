@@ -1,0 +1,33 @@
+# TODO
+
+- [x] Skeleton/load resources
+- [x] Transition to a class Based UI (RAI)
+- [] Input/Commands
+    - [] Inputs - raylib for keyboard input
+    - [] CommandType enum class to separate logic for actions
+    - [] Command struct to store commandtype attributes
+    - [] Keymapping, keys to commands
+- [] Implement gap buffer
+    - [] Fill rest of this out later after i read up on Gap buffers
+    - [] Bound checks?
+    - [] Iterator invalidation rules?
+    - [] noexcept?
+    - [] Start unit testing, doctest or Catch2
+- [] Line indexing and cursor
+    - [] Track byte offset to row and column and track cursor/selection
+    - [] A vector maybe?
+    - [] Binary search?
+    - [] Precondition?
+    - [] Clamps?
+- [] Main editting logic
+    - [] Code non UI editor to capture input into a buffer and change it
+    - [] Apply methods like insert_char(), backspace(), del(), move_left(), move_right(), etc
+    - [] After every mutation, ensure the line index incrementally and maintain invariants
+    - [] Maybe add spdlog for logging
+- [] Viewport, layout, rendering buffer
+    - [] Draw only whats visible
+    - [] Draw cursor
+    - [] Draw selection
+    - [] Line numbers
+    - [] Status bar
+- [] 
