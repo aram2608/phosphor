@@ -21,6 +21,9 @@ class App {
         // Deconstructor
         ~App();
 
+        // Main Logic to draw to scren
+        void draw();
+
         // Publically available resources
         Font font;
     private:
