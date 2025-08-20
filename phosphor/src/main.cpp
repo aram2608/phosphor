@@ -8,8 +8,14 @@ int main() {
     int height = 750;
     int offset = 50;
 
+    // Config flags for window - dont want to worry about that logic yet for the UI
+    // SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+
     // Initialize window before loading GPU resources
     InitWindow(width + offset, height + offset, "phosphor");
+
+    // Lock FPS to make the window less jumpy
+    SetTargetFPS(60);
 
     // App UI
     App app = App();
