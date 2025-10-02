@@ -42,8 +42,8 @@
 
 # Notes for implementation
 notes.cpp
-gap_buffer.cpp
-gap_buffer.hpp
+gb.cpp
+gb.hpp
 to_implement.cpp
 theme_idea.hpp
 

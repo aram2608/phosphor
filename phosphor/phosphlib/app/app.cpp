@@ -3,26 +3,33 @@
 #include "palette/palette.hpp"
 
 // Constructor for App class
-App::App() {
+App::App(std::string contents) : contents(contents) {
     // We load in the font from our assets file
-    font = LoadFont("assets/fonts/Debrosee-ALPnL.ttf");
+    title_font = LoadFont(
+        "JetBrainsMono-2.304/fonts/ttf/JetBrainsMono-ExtraBoldItalic.ttf");
+    text_font =
+        LoadFont("JetBrainsMono-2.304/fonts/ttf/JetBrainsMono-Medium.ttf");
 }
 
 // Deconstructor for App class
 App::~App() {
     // We unload our font to prevent mem leaks
-    UnloadFont(font);
+    UnloadFont(title_font);
 }
 
 // Funntion to draw our window and screen changes
 void App::draw() {
     // Base UI - will probably change in the future, it burns my eyes a bit
     // We clear the background every loop and display the dark background
-    ClearBackground(Palette::DarkBg);
+    ClearBackground(PhosphorGreen::DarkBg);
     DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2,
-                                Palette::AquaMint);
-    DrawLineEx({25, 60}, {775, 60}, 3, Palette::AquaMint);
-    DrawTextEx(font, "phosphor", {40, 35}, 25.0f, 2, Palette::SoftMint);
+                                PhosphorGreen::SoftMint);
+    DrawLineEx(Vector2{25, 60}, Vector2{775, 60}, 3, PhosphorGreen::SoftMint);
+    DrawTextEx(title_font, "phosphor", Vector2{40, 25}, 25.0f, 2,
+               PhosphorGreen::ForestMoss);
+    DrawTextEx(text_font, contents.c_str(), Vector2{200, 200}, 25.0f, 2,
+               PhosphorGreen::ForestMoss);
 }
 
+// Function update window after keyboard events
 void App::update() {}

@@ -1,12 +1,13 @@
 #ifndef APP_HPP
 #define APP_HPP
 #include <raylib.h>
+#include <string>
 
 // App class to contain resources used during execution of program
 class App {
   public:
     // Constructor
-    App();
+    App(std::string contents);
     // Deconstructor
     ~App();
     // Main Logic to draw to scren
@@ -15,7 +16,9 @@ class App {
     void update();
 
     // Publically available resources
-    Font font;
+    Font title_font;
+    Font text_font;
+    std::string contents;
 
   private:
 };

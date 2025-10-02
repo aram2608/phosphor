@@ -1,7 +1,5 @@
 # TODO
 
-- [x] Skeleton/load resources
-- [x] Transition to a class Based UI (RAI)
 - [] Input/Commands
     - [] Inputs - raylib for keyboard input
     - [] CommandType enum class to separate logic for actions
@@ -12,7 +10,6 @@
     - [] Bound checks?
     - [] Iterator invalidation rules?
     - [] noexcept?
-    - [] Start unit testing, doctest or Catch2
 - [] Line indexing and cursor
     - [] Track byte offset to row and column and track cursor/selection
     - [] A vector maybe?
@@ -30,4 +27,3 @@
     - [] Draw selection
     - [] Line numbers
     - [] Status bar
-- [] 
