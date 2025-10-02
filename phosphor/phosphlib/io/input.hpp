@@ -1,12 +1,15 @@
-#include <raylib.h>
+#ifndef INPUT_HPP
+#define INPUT_HPP
+
 #include <cstdint>
+#include <raylib.h>
 
 // Enum class to contain the separate input types
-enum class CommandType { 
-    InsertChar, 
-    BackSpace, 
-    MoveLeft, 
-    MoveRight, 
+enum class CommandType {
+    InsertChar,
+    BackSpace,
+    MoveLeft,
+    MoveRight,
     MoveUp,
     MoveDown,
     Save,
@@ -19,3 +22,5 @@ struct Command {
     CommandType type;
     uint32_t ch;
 };
+
+#endif

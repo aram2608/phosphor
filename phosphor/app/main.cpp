@@ -1,6 +1,6 @@
+#include "../phosphlib/app/app.hpp"
 #include <iostream>
 #include <raylib.h>
-#include "app.hpp"
 
 int main() {
     // Harded screen params with offset
@@ -8,8 +8,8 @@ int main() {
     int height = 750;
     int offset = 50;
 
-    // Config flags for window - dont want to worry about that logic yet for the UI
-    // SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    // Config flags for window - dont want to worry about that logic yet for the
+    // UI SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 
     // Initialize window before loading GPU resources
     InitWindow(width + offset, height + offset, "phosphor");
@@ -21,9 +21,11 @@ int main() {
     App app = App();
 
     // Load font
-    while(!WindowShouldClose()) {
+    while (!WindowShouldClose()) {
         // Draw contents to screen
+        BeginDrawing();
         app.draw();
+        EndDrawing();
     }
 
     // Close window following execution
