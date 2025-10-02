@@ -6,9 +6,9 @@
 #include <raylib.h>
 
 // Helper function to decide if a file has contents
-static std::string slurp_file(const std::filesystem::path &p) {
+static std::string slurp_file(const std::filesystem::path &path) {
     // We create an ifstream object
-    std::ifstream file(p);
+    std::ifstream file(path);
     // If the file cannot be opened we return an empty string
     if (!file.is_open()) {
         std::cout << "File could not be opened." << std::endl;
@@ -49,10 +49,11 @@ int main(int argc, const char *argv[]) {
     SetTargetFPS(60);
 
     // App UI
-    App app = App(initial);
+    App app = App(initial, file);
 
     // Load font
     while (!WindowShouldClose()) {
+        app.update();
         // Draw contents to screen
         BeginDrawing();
         app.draw();
@@ -60,6 +61,5 @@ int main(int argc, const char *argv[]) {
     }
 
     // Close window following execution
-    CloseWindow();
     return 0;
 }

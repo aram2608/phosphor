@@ -3,7 +3,8 @@
 #include "palette/palette.hpp"
 
 // Constructor for App class
-App::App(std::string contents) : contents(contents) {
+App::App(std::string contents, std::filesystem::path file)
+    : contents(contents), file(file), editor(contents, file) {
     // We load in the font from our assets file
     title_font = LoadFont(
         "JetBrainsMono-2.304/fonts/ttf/JetBrainsMono-ExtraBoldItalic.ttf");
@@ -27,9 +28,8 @@ void App::draw() {
     DrawLineEx(Vector2{25, 60}, Vector2{775, 60}, 3, PhosphorGreen::SoftMint);
     DrawTextEx(title_font, "phosphor", Vector2{40, 25}, 25.0f, 2,
                PhosphorGreen::ForestMoss);
-    DrawTextEx(text_font, contents.c_str(), Vector2{200, 200}, 25.0f, 2,
-               PhosphorGreen::ForestMoss);
+    editor.draw();
 }
 
 // Function update window after keyboard events
-void App::update() {}
+void App::update() { editor.update(); }
