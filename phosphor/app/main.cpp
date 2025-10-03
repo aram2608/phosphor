@@ -12,7 +12,7 @@ static std::string slurp_file(const std::filesystem::path &path) {
     // If the file cannot be opened we return an empty string
     if (!file.is_open()) {
         std::cout << "File could not be opened." << std::endl;
-        return {};
+        return "";
     }
     // Read entire file into string using iterators
     std::string content((std::istreambuf_iterator<char>(file)),
@@ -24,9 +24,9 @@ static std::string slurp_file(const std::filesystem::path &path) {
 
 int main(int argc, const char *argv[]) {
     // We create an instance of a file path object
-    std::filesystem::path file;
+    std::filesystem::path file{};
 
-    // If the number of args is greater than one, we assume were given a file
+    // If the number of args is greater than one, we assume a file was given
     if (argc > 1) {
         file = argv[1];
     }
@@ -61,5 +61,6 @@ int main(int argc, const char *argv[]) {
     }
 
     // Close window following execution
+    CloseWindow();
     return 0;
 }
