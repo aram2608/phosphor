@@ -1,5 +1,4 @@
 #include "app/app.hpp"
-#include "app.hpp"
 #include "palette/palette.hpp"
 
 // Constructor for App class
@@ -32,4 +31,4 @@ void App::draw() {
 }
 
 // Function update window after keyboard events
-void App::update() { editor.update(); }
+void App::update() { editor.poll_input(); }

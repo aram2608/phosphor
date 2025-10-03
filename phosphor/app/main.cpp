@@ -46,7 +46,7 @@ int main(int argc, const char *argv[]) {
     InitWindow(WIDTH, HEIGHT, "phosphor");
 
     // Lock FPS to make the window less jumpy
-    SetTargetFPS(60);
+    SetTargetFPS(120);
 
     // App UI
     App app = App(initial, file);
