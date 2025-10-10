@@ -2,8 +2,6 @@ find_package(raylib 3.0 REQUIRED)
 find_package(glfw3 REQUIRED)
 
 add_library(phosphlib
-    phosphlib/app/app.cpp
-    #phosphlib/io/
     phosphlib/editor/editor.cpp
 )
 

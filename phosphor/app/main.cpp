@@ -1,4 +1,4 @@
-#include "../phosphlib/app/app.hpp"
+#include "../phosphlib/editor/editor.hpp"
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -48,15 +48,17 @@ int main(int argc, const char *argv[]) {
     // Lock FPS to make the window less jumpy
     SetTargetFPS(120);
 
-    // App UI
-    App app = App(initial, file);
+    // We create our editor instance
+    Editor editor = Editor(initial, file);
 
     // Load font
     while (!WindowShouldClose()) {
-        app.update();
+        // We poll keyboard input
+        editor.poll_input();
         // Draw contents to screen
         BeginDrawing();
-        app.draw();
+        // We draw updated contents
+        editor.draw();
         EndDrawing();
     }
 

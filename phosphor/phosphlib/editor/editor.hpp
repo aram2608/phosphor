@@ -1,8 +1,6 @@
 #ifndef EDITOR_HPP
 #define EDITOR_HPP
 
-#include "input/input.hpp"
-
 #include <filesystem>
 #include <fstream>
 #include <functional>
@@ -39,6 +37,8 @@ class Editor {
     void handle_down_key();
     void handle_backspace();
     void handle_enter();
+    void handle_ctrl();
+    void handle_tab();
     // We use a hashmap for faster lookups than a map,
     // C++ has a built in hash function for primitives that is quite good
     // so we don't have to make our own
@@ -46,6 +46,7 @@ class Editor {
     const std::vector<int> keys;
     std::filesystem::path file;
     Font text_font;
+    Font title_font;
     std::string contents;
 };
 
