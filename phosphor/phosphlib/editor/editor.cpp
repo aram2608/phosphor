@@ -1,83 +1,117 @@
 #include "editor/editor.hpp"
+#include "editor.hpp"
 #include "palette/palette.hpp"
 
 // Constructor for the Editor class
 // We pass in the parsed contents and the file path
 // We also initialize a vector of keys we want to poll for
 Editor::Editor(std::string contents, std::filesystem::path file)
-    : contents(contents), file(file),
-      keys{KEY_LEFT,      KEY_RIGHT, KEY_UP,           KEY_DOWN,
-           KEY_BACKSPACE, KEY_ENTER, KEY_LEFT_CONTROL, KEY_TAB} {
-    // We load in the font from our assets file
-    title_font = LoadFont(
-        "JetBrainsMono-2.304/fonts/ttf/JetBrainsMono-ExtraBoldItalic.ttf");
+    : buffer_(contents), contents_(contents), file_(file),
+      keys_{KEY_LEFT,      KEY_RIGHT, KEY_UP,           KEY_DOWN,
+            KEY_BACKSPACE, KEY_ENTER, KEY_LEFT_CONTROL, KEY_TAB} {
     // We load the font from JetBrains
-    text_font =
+    text_font_ =
         LoadFont("JetBrainsMono-2.304/fonts/ttf/JetBrainsMono-Medium.ttf");
     // We bind the keymap in our initializer
     bind();
+    state_ = EditingState::Editing;
 }
 
 // Destructor for the Editor class
-Editor::~Editor() { UnloadFont(text_font); }
+Editor::~Editor() { UnloadFont(text_font_); }
 
 // Function to draw editor contents to window
 void Editor::draw() {
-    // Base UI - will probably change in the future, it burns my eyes a bit
-    // We clear the background every loop and display the dark background
-    ClearBackground(PhosphorGreen::DarkBg);
-    DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2,
-                                PhosphorGreen::SoftMint);
-    DrawLineEx(Vector2{25, 60}, Vector2{775, 60}, 3, PhosphorGreen::SoftMint);
-    DrawTextEx(title_font, "phosphor", Vector2{40, 25}, 25.0f, 2,
-               PhosphorGreen::ForestMoss);
-    // We simple pass in the preloaded font and the contents as a c string
+    ui_.draw_ui();
     // TODO: calculate position given text size
-    DrawTextEx(text_font, contents.c_str(), Vector2{100, 200}, 25.0f, 2,
+    DrawTextEx(text_font_, buffer_.c_str(), Vector2{100, 70}, 25.0f, 2,
                PhosphorGreen::ForestMoss);
+    if (state_ == EditingState::Editing) {
+        DrawTextEx(text_font_, file_.c_str(), ui_.fn_pos_, 25.0f, 2,
+                   PhosphorGreen::ForestMoss);
+    } else if (state_ == EditingState::Renaming) {
+        DrawTextEx(text_font_, "Renaming: ", Vector2{400, 25}, 25.0f, 2,
+                   PhosphorGreen::ForestMoss);
+        DrawTextEx(text_font_, new_name_.c_str(), Vector2{550, 25}, 25.0f, 2,
+                   PhosphorGreen::ForestMoss);
+    }
 }
 
 // Function to poll for keyboard input
 void Editor::poll_input() {
+    // We make an alias
+    using IO = void (Editor::*)();
+    static constexpr IO TABLE[] = {
+        &Editor::editing,
+        &Editor::name_file,
+    };
+    (this->*TABLE[static_cast<std::size_t>(state_)])();
+}
+
+void Editor::name_file() {
     // We listen for keyboard events and return the code point
     for (int code_point; (code_point = GetCharPressed()) != 0;) {
-        // If the code is greater than 32 or a new line or a tab we process it
+        // If the code is greater than 32 or a new line or a tab we process
+        // it
         if (code_point >= 32 || code_point == '\n' || code_point == '\t') {
-            contents += code_point;
+            new_name_ += code_point;
+        }
+    }
+    // After we hit enter we save the new name and return to an editing state
+    if (IsKeyPressed(KEY_ENTER)) {
+        file_ = new_name_;
+        new_name_.clear();
+        state_ = EditingState::Editing;
+    } else if (IsKeyPressed(KEY_BACKSPACE)) {
+        if (!new_name_.empty()) {
+            new_name_.pop_back();
+        }
+    }
+}
+
+void Editor::editing() {
+    // We listen for keyboard events and return the code point
+    for (int code_point; (code_point = GetCharPressed()) != 0;) {
+        // If the code is greater than 32 or a new line or a tab we process
+        // it
+        if (code_point >= 32 || code_point == '\n' || code_point == '\t') {
+            // contents_ += code_point;
+            buffer_.insert(code_point);
         }
     }
 
     // We iterate over the keys vector and dispatch the applicable method if
     //  encountered
-    for (int k : keys)
+    for (int k : keys_) {
         if (IsKeyDown(k)) {
             dispatch(k);
         }
+    }
+}
+
+// Helper function to search for our method in the keymap
+void Editor::dispatch(int key) {
+    // We use the find method to return a map iterator
+    auto elem = keymap_.find(key);
+    // We test if the object is in the map
+    if (elem != keymap_.end()) {
+        // We then invoke the method and dereference the Editor instance
+        elem->second(*this);
+    }
 }
 
 // Helper function to bind the methods to our keymap
 // This helps keep our constructor clean
 void Editor::bind() {
     // We use a lambda to capture the dereferenced pointer to this, (ie *this)
-    keymap[KEY_LEFT] = [](Editor &editor) { editor.handle_left_key(); };
-    keymap[KEY_RIGHT] = [](Editor &editor) { editor.handle_right_key(); };
-    keymap[KEY_UP] = [](Editor &editor) { editor.handle_up_key(); };
-    keymap[KEY_DOWN] = [](Editor &editor) { editor.handle_down_key(); };
-    keymap[KEY_BACKSPACE] = [](Editor &editor) { editor.handle_backspace(); };
-    keymap[KEY_ENTER] = [](Editor &editor) { editor.handle_enter(); };
-    keymap[KEY_LEFT_CONTROL] = [](Editor &editor) { editor.handle_ctrl(); };
-    keymap[KEY_TAB] = [](Editor &editor) { editor.handle_tab(); };
-}
-
-// Helper function to search for our method in the keymap
-void Editor::dispatch(int key) {
-    // We use the find method to return a map iterator
-    auto elem = keymap.find(key);
-    // We test if the object is in the map
-    if (elem != keymap.end()) {
-        // We then invoke the method and dereference the Editor instance
-        elem->second(*this);
-    }
+    keymap_[KEY_LEFT] = [](Editor &editor) { editor.handle_left_key(); };
+    keymap_[KEY_RIGHT] = [](Editor &editor) { editor.handle_right_key(); };
+    keymap_[KEY_UP] = [](Editor &editor) { editor.handle_up_key(); };
+    keymap_[KEY_DOWN] = [](Editor &editor) { editor.handle_down_key(); };
+    keymap_[KEY_BACKSPACE] = [](Editor &editor) { editor.handle_backspace(); };
+    keymap_[KEY_ENTER] = [](Editor &editor) { editor.handle_enter(); };
+    keymap_[KEY_LEFT_CONTROL] = [](Editor &editor) { editor.handle_ctrl(); };
+    keymap_[KEY_TAB] = [](Editor &editor) { editor.handle_tab(); };
 }
 
 void Editor::handle_left_key() { std::cout << "Left key pressed" << std::endl; }
@@ -100,8 +134,8 @@ void Editor::handle_backspace() {
 
     // We only erase if enough time has passed since last erase and the contents
     // are not empty
-    if (current_time - last_erase_time >= erase_buffer && !contents.empty()) {
-        contents.pop_back();
+    if (current_time - last_erase_time >= erase_buffer && !buffer_.empty()) {
+        buffer_.erase_back(1);
         last_erase_time = current_time;
     }
 }
@@ -114,15 +148,14 @@ void Editor::handle_enter() {
 
     // We only erase if enough time has passed since last erase and the contents
     // are not empty
-    if (current_time - last_enter_time >= enter_buffer && !contents.empty()) {
-        contents += "\n";
+    if (current_time - last_enter_time >= enter_buffer) {
+        buffer_.insert('\n');
         last_enter_time = current_time;
     }
 }
 
 void Editor::handle_ctrl() {
     if (IsKeyPressed(KEY_S)) {
-        std::cout << "Saving file." << std::endl;
         save();
     }
 }
@@ -135,27 +168,34 @@ void Editor::handle_tab() {
 
     // We only erase if enough time has passed since last erase and the contents
     // are not empty
-    if (current_time - last_tab_time >= tab_buffer && !contents.empty()) {
-        contents += "\t";
+    if (current_time - last_tab_time >= tab_buffer && !contents_.empty()) {
+        buffer_.insert('\t');
         last_tab_time = current_time;
     }
 }
 
 // Function to save changed buffer
-bool Editor::save() {
-    // We first make sure the file is not empty
-    if (contents.empty()) {
-        return false;
+void Editor::save() {
+    // We first test if we were given a file path
+    if (file_.empty()) {
+        // If not we change to a renaming state
+        state_ = EditingState::Renaming;
+        return;
     }
+
+    // We then make sure the buffer is not empty
+    if (contents_.empty()) {
+        return;
+    }
+
     // We then create an output file stream with our file data
-    std::ofstream out(file);
+    std::ofstream out(file_);
     // If the object was not created we return out
     if (!out) {
-        return false;
+        return;
     }
+
     // We copy the written contents into a new string and write out
-    const std::string new_contents = contents;
+    const std::string new_contents = contents_;
     out.write(new_contents.data(), (std::streamsize)new_contents.size());
-    // If successful we cast the object to a bool and return
-    return (bool)out;
 }

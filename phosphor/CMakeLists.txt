@@ -1,8 +1,11 @@
 find_package(raylib 3.0 REQUIRED)
 find_package(glfw3 REQUIRED)
+find_package(cxxopts CONFIG REQUIRED)
 
 add_library(phosphlib
     phosphlib/editor/editor.cpp
+    phosphlib/gap_buffer/gap_buffer.cpp
+    phosphlib/ui/ui.cpp
 )
 
 target_include_directories(phosphlib
@@ -14,6 +17,7 @@ target_link_libraries(phosphlib
     PUBLIC
     raylib
     glfw
+    cxxopts::cxxopts
 )
 
 target_compile_options(phosphlib

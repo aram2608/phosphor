@@ -1,6 +1,9 @@
 #ifndef EDITOR_HPP
 #define EDITOR_HPP
 
+#include "gap_buffer/gap_buffer.hpp"
+#include "ui/ui.hpp"
+
 #include <filesystem>
 #include <fstream>
 #include <functional>
@@ -20,6 +23,8 @@ class Editor;
  */
 using Action = std::function<void(Editor &)>;
 
+enum class EditingState { Editing, Saved, Renaming };
+
 class Editor {
   public:
     Editor(std::string contents, std::filesystem::path file);
@@ -28,7 +33,9 @@ class Editor {
     void poll_input();
 
   private:
-    bool save();
+    void name_file();
+    void editing();
+    void save();
     void bind();
     void dispatch(int key);
     void handle_left_key();
@@ -42,12 +49,15 @@ class Editor {
     // We use a hashmap for faster lookups than a map,
     // C++ has a built in hash function for primitives that is quite good
     // so we don't have to make our own
-    std::unordered_map<int, Action> keymap;
-    const std::vector<int> keys;
-    std::filesystem::path file;
-    Font text_font;
-    Font title_font;
-    std::string contents;
+    GapBuffer buffer_;
+    std::unordered_map<int, Action> keymap_;
+    const std::vector<int> keys_;
+    std::filesystem::path file_;
+    Font text_font_;
+    std::string contents_;
+    std::string new_name_{};
+    EditingState state_;
+    UI ui_;
 };
 
 #endif

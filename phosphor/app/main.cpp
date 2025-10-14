@@ -1,4 +1,5 @@
 #include "../phosphlib/editor/editor.hpp"
+#include <cxxopts.hpp>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -22,13 +23,27 @@ static std::string slurp_file(const std::filesystem::path &path) {
     return content;
 }
 
-int main(int argc, const char *argv[]) {
-    // We create an instance of a file path object
+int main(int argc, const char **argv) {
+    // We create a new options object
+    cxxopts::Options options("phosphor", "The phosphor text editor");
+
+    // We add the options we want to parse
+    options.add_options()("h,help", "Help message")(
+        "f,file", "Path to file for editing", cxxopts::value<std::string>());
+
+    // We can now parse the arguments
+    auto result = options.parse(argc, argv);
+
+    // We create an empty instance of a file path object
     std::filesystem::path file{};
 
-    // If the number of args is greater than one, we assume a file was given
-    if (argc > 1) {
-        file = argv[1];
+    // We print our help message and exit if help flag is passed
+    if (result.count("help")) {
+        std::cout << options.help() << std::endl;
+        exit(0);
+        // We extract the file name if passed in
+    } else if (result.count("file")) {
+        file = result["file"].as<std::string>();
     }
 
     // We try and read the file, if it is empty we simply return an empty string

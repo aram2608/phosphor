@@ -42,13 +42,9 @@
 
 # Notes for implementation
 notes.cpp
-gb.cpp
-gb.hpp
-to_implement.cpp
 theme_idea.hpp
 
 # Build directory
-phosphor/build/
 build/
 
 .vscode/
