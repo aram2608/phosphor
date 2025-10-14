@@ -6,6 +6,8 @@ UI::UI() : title_("phsophor") {
         "JetBrainsMono-2.304/fonts/ttf/JetBrainsMono-ExtraBoldItalic.ttf");
 }
 
+UI::~UI() { UnloadFont(title_font_); }
+
 const void UI::draw_ui() {
     draw_bg();
     draw_header();

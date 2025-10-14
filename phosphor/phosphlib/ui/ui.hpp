@@ -7,6 +7,7 @@
 
 struct UI {
     UI();
+    ~UI();
     const Rectangle frame_{10, 10, 780, 780};
     const Vector2 title_pos_{40, 25};
     const Vector2 fn_pos_{600, 25};
