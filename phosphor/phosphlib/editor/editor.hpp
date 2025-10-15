@@ -2,8 +2,10 @@
 #define EDITOR_HPP
 
 #include "gap_buffer/gap_buffer.hpp"
+#include "scripting/scripting.hpp"
 #include "ui/ui.hpp"
 
+#include <array>
 #include <filesystem>
 #include <fstream>
 #include <functional>
@@ -23,14 +25,20 @@ class Editor;
  */
 using Action = std::function<void(Editor &)>;
 
-enum class EditingState { Editing, Saved, Renaming };
+// DO NOT TOUCH THE ORDER OF THIS - THE STATE MANAGER WILL BREAK
+enum class EditingState { Editing, Renaming, Count };
 
 class Editor {
   public:
+    // Constructor for the editor class
     Editor(std::string contents, std::filesystem::path file);
+    // Destructor for the editor class
     ~Editor();
+    // Main method to draw to window
     void draw();
+    // Main logic to poll for keyboard events
     void poll_input();
+    void insert_text(const std::string &text);
 
   private:
     void name_file();
@@ -46,12 +54,10 @@ class Editor {
     void handle_enter();
     void handle_ctrl();
     void handle_tab();
-    // We use a hashmap for faster lookups than a map,
-    // C++ has a built in hash function for primitives that is quite good
-    // so we don't have to make our own
+    ScriptingVM *vm_ = nullptr;
     GapBuffer buffer_;
     std::unordered_map<int, Action> keymap_;
-    const std::vector<int> keys_;
+    std::vector<int> keys_;
     std::filesystem::path file_;
     Font text_font_;
     std::string contents_;

@@ -14,6 +14,11 @@ Editor::Editor(std::string contents, std::filesystem::path file)
         LoadFont("JetBrainsMono-2.304/fonts/ttf/JetBrainsMono-Medium.ttf");
     // We bind the keymap in our initializer
     bind();
+    vm_ = new ScriptingVM(this);
+    vm_->load_init(std::filesystem::path("init.lua"));
+    for (auto &[key, cmd] : vm_->lua_keymap_) {
+        keys_.push_back(key);
+    }
     state_ = EditingState::Editing;
 }
 
@@ -39,13 +44,24 @@ void Editor::draw() {
 
 // Function to poll for keyboard input
 void Editor::poll_input() {
-    // We make an alias
+    // We make an alias to a function pointer for a member function that returns
+    // a void
     using IO = void (Editor::*)();
-    static constexpr IO TABLE[] = {
+    // We make an array scoped to this function that stores the functions we
+    // want to poll for
+    static constexpr std::array<IO, 2> TABLE = {
         &Editor::editing,
         &Editor::name_file,
     };
+    // We then cast our state into a size_t so we can index the correct
+    // method
     (this->*TABLE[static_cast<std::size_t>(state_)])();
+}
+
+void Editor::insert_text(const std::string &text) {
+    for (unsigned char c : text) {
+        buffer_.insert(c);
+    }
 }
 
 void Editor::name_file() {
@@ -97,6 +113,13 @@ void Editor::dispatch(int key) {
     if (elem != keymap_.end()) {
         // We then invoke the method and dereference the Editor instance
         elem->second(*this);
+    }
+
+    if (vm_ && vm_->has_key(key)) {
+        if (auto name = vm_->key_to_command(key)) {
+            vm_->run_command(*name);
+        }
+        return;
     }
 }
 
@@ -166,9 +189,9 @@ void Editor::handle_tab() {
     double tab_buffer = 0.15;
     double current_time = GetTime();
 
-    // We only erase if enough time has passed since last erase and the contents
+    // We only erase if enough time has passed since last erase and the buffer
     // are not empty
-    if (current_time - last_tab_time >= tab_buffer && !contents_.empty()) {
+    if (current_time - last_tab_time >= tab_buffer) {
         buffer_.insert('\t');
         last_tab_time = current_time;
     }
@@ -184,7 +207,7 @@ void Editor::save() {
     }
 
     // We then make sure the buffer is not empty
-    if (contents_.empty()) {
+    if (buffer_.empty()) {
         return;
     }
 
@@ -196,6 +219,6 @@ void Editor::save() {
     }
 
     // We copy the written contents into a new string and write out
-    const std::string new_contents = contents_;
+    const std::string new_contents = buffer_.str();
     out.write(new_contents.data(), (std::streamsize)new_contents.size());
 }

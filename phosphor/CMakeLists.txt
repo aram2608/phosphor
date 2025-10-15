@@ -1,16 +1,19 @@
 find_package(raylib 3.0 REQUIRED)
 find_package(glfw3 REQUIRED)
 find_package(cxxopts CONFIG REQUIRED)
+find_package(Lua REQUIRED)
 
 add_library(phosphlib
     phosphlib/editor/editor.cpp
     phosphlib/gap_buffer/gap_buffer.cpp
     phosphlib/ui/ui.cpp
+    phosphlib/scripting/scripting.cpp
 )
 
 target_include_directories(phosphlib
     PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/phosphlib/
+    ${LUA_INCLUDE_DIR}
 )
 
 target_link_libraries(phosphlib
@@ -18,6 +21,7 @@ target_link_libraries(phosphlib
     raylib
     glfw
     cxxopts::cxxopts
+    ${LUA_LIBRARIES}
 )
 
 target_compile_options(phosphlib
