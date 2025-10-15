@@ -18,20 +18,22 @@ static inline void push_keys_table(lua_State *L) {
     // We make a new table
     // we will store it as editor.keys
     lua_newtable(L);
-// I hate macros but in this case its useful for mass subsitutions for our
-// keys of interest
-#define PUT(KEYSYM)                                                            \
-    lua_pushinteger(L, KEYSYM);                                                \
-    lua_setfield(L, -2, #KEYSYM)
+    // I hate macros but in this case its useful for mass subsitutions for our
+    // keys of interest
+    // clang-format off
+    #define PUT(KEYSYM) \
+        lua_pushinteger(L, KEYSYM); \
+        lua_setfield(L, -2, #KEYSYM)
 
-    PUT(KEY_H);
-    PUT(KEY_I);
-    PUT(KEY_S);
-    PUT(KEY_TAB);
-    PUT(KEY_ENTER);
-    PUT(KEY_LEFT_SHIFT);
+        PUT(KEY_H);
+        PUT(KEY_I);
+        PUT(KEY_S);
+        PUT(KEY_TAB);
+        PUT(KEY_ENTER);
+        PUT(KEY_LEFT_SHIFT);
 
-#undef PUT
+    #undef PUT
+    // clang-format on
 }
 
 static int l_register_command(lua_State *L) {
