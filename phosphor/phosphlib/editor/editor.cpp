@@ -1,5 +1,4 @@
 #include "editor/editor.hpp"
-#include "editor.hpp"
 #include "palette/palette.hpp"
 
 // Helper method to decide if a mod key is currently applied
@@ -106,6 +105,7 @@ void Editor::name_file() {
     if (IsKeyPressed(KEY_ENTER)) {
         file_ = new_name_;
         new_name_.clear();
+        save();
         state_ = EditingState::Editing;
         // We need to be able to erase characters from the new name so
         // we pop back teh value if he new name string is not empty
@@ -220,6 +220,7 @@ void Editor::save() {
 
     // We then make sure the buffer is not empty
     if (buffer_.empty()) {
+        // If it's empty we return out
         return;
     }
 

@@ -33,7 +33,10 @@ void ScriptingVM::push_api(sol::state &L) {
                Mod::MOD_SHIFT, "ALT", Mod::MOD_ALT, "SUPER", Mod::MOD_SUPER);
 
     // We are making a new enum for our color palletes
-    L.new_enum("Pallete", "Green", Pallete::Green, "Amber", Pallete::Amber);
+    L.new_enum("Pallete", "Green", Pallete::Green, "Amber", Pallete::Amber,
+               "Blue", Pallete::Blue, "Red", Pallete::Red, "Cyan",
+               Pallete::Cyan, "Magenta", Pallete::Magenta, "White",
+               Pallete::White);
 
     // We create a table to store useful keys to override
     L.new_enum("keys",

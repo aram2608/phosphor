@@ -15,7 +15,7 @@ register_command(keys.KEY_H, Mod.CTRL, function(ed)
 end)
 
 register_command(keys.KEY_P, Mod.CTRL, function (ed)
-  ed:pick_pallete(Pallete.Green)
+  ed:pick_pallete(Pallete.Magenta)
 end)
 
 --[[
@@ -26,4 +26,4 @@ end)
     pick_pallete()
 ]]
 
-pick_pallete(Pallete.Amber)
+pick_pallete(Pallete.Blue)

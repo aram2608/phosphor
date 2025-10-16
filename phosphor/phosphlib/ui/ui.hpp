@@ -20,13 +20,18 @@ struct UI {
     void dispatch_pallete();
     void phosphor_green();
     void phosphor_amber();
+    void phosphor_blue();
+    void phosphor_red();
+    void phosphor_cyan();
+    void phosphor_magenta();
+    void phosphor_white();
     Font title_font_;
-    Color title_color_;
-    Color text_color_;
-    Color ui_color_;
-    Color bg_color_;
+    Color title_color_{PhosphorGreen::LightGreen};
+    Color text_color_{PhosphorGreen::DarkGreen};
+    Color ui_color_{PhosphorGreen::SoftGreen};
+    Color bg_color_{PhosphorGreen::DarkBg};
     Pallete pallete_{Pallete::Green};
-    const char *title_;
+    const char *title_{"phosphor"};
 };
 
 #endif
