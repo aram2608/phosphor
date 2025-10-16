@@ -1,4 +1,3 @@
-editor.register_command("hello.world", function()
-	editor.hello_world()
+register_command(keys.KEY_S, Mod.CTRL, function(ed)
+  ed:insert_text("Saved!\n")
 end)
-editor.bind_key(editor.keys.KEY_LEFT_SHIFT, "hello.world")

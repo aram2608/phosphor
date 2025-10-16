@@ -1,6 +1,7 @@
 find_package(raylib 3.0 REQUIRED)
 find_package(glfw3 REQUIRED)
 find_package(cxxopts CONFIG REQUIRED)
+find_package(sol2 CONFIG REQUIRED)
 find_package(Lua REQUIRED)
 
 add_library(phosphlib
@@ -13,6 +14,7 @@ add_library(phosphlib
 target_include_directories(phosphlib
     PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/phosphlib/
+    ${sol2_INCLUDE_DIRS}
     ${LUA_INCLUDE_DIR}
 )
 

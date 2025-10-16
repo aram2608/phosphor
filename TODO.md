@@ -6,6 +6,7 @@
 - [x] Update text drawn to screen
 - [x] Save new updated file
 - [] Create line indexing
-- [] Update position using arrow keys
+- [x] Update position using arrow keys - partially at least
 - [] Track mouse position
 - [] Update position with mouse clicks
+- [] Add Lua API for configurations/custom settings

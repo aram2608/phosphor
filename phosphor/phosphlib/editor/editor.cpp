@@ -6,16 +6,16 @@
 static inline Mod current_mods() {
     Mod m = MOD_NONE;
     if (IsKeyDown(KEY_LEFT_CONTROL) || IsKeyDown(KEY_RIGHT_CONTROL)) {
-        m = m | MOD_CTRL;
+        m |= MOD_CTRL;
     }
     if (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT)) {
-        m = m | MOD_SHIFT;
+        m |= MOD_SHIFT;
     }
     if (IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT)) {
-        m = m | MOD_ALT;
+        m |= MOD_ALT;
     }
     if (IsKeyDown(KEY_LEFT_SUPER) || IsKeyDown(KEY_RIGHT_SUPER)) {
-        m = m | MOD_SUPER;
+        m |= MOD_SUPER;
     }
     return m;
 }
@@ -24,19 +24,13 @@ static inline Mod current_mods() {
 // We pass in the parsed contents and the file path
 // We also initialize a vector of keys we want to poll for
 Editor::Editor(std::string contents, std::filesystem::path file)
-    : buffer_(contents), contents_(contents), file_(file),
-      keys_{KEY_LEFT,      KEY_RIGHT, KEY_UP,           KEY_DOWN,
-            KEY_BACKSPACE, KEY_ENTER, KEY_LEFT_CONTROL, KEY_TAB} {
+    : buffer_(contents), contents_(contents), file_(file), vm_(this) {
     // We load the font from JetBrains
     text_font_ =
         LoadFont("JetBrainsMono-2.304/fonts/ttf/JetBrainsMono-Medium.ttf");
     // We bind the keymap in our initializer
     bind();
-    vm_ = new ScriptingVM(this);
-    vm_->load_init(std::filesystem::path("init.lua"));
-    for (auto &[key, cmd] : vm_->lua_keymap_) {
-        keys_.push_back(key);
-    }
+    vm_.load_init(std::filesystem::path("init.lua"));
     state_ = EditingState::Editing;
 }
 
@@ -78,7 +72,8 @@ void Editor::poll_input() {
 // Wrapper method for inserting characters to the buffer
 // Useful for exposing inseration capabilites for Lua extensions
 void Editor::insert_text(const std::string &text) {
-    for (unsigned char c : text) {
+    // We loop through each character and insert into buffer
+    for (char c : text) {
         buffer_.insert(c);
     }
 }
@@ -109,10 +104,14 @@ void Editor::name_file() {
 void Editor::editing() {
     // We listen for keyboard events and return the code point
     for (int cp; (cp = GetCharPressed()) != 0;) {
-        if (current_mods() != MOD_NONE)
-            continue; // prevents Ctrl+S from inserting 's'
-        if (cp >= 32 || cp == '\n' || cp == '\t')
+        // We prevents Ctrl+S from inserting 's' or other combos
+        if (current_mods() != MOD_NONE) {
+            continue;
+        }
+        // Otherwise can insert the character into the buffer
+        if (cp >= 32 || cp == '\n' || cp == '\t') {
             buffer_.insert(cp);
+        }
     }
 
     // We listen for which Key is pressed and create a chord object
@@ -139,15 +138,17 @@ void Editor::bind() {
     chordmap_[{KEY_TAB, MOD_NONE}] = [](Editor &e) { e.tab(); };
     chordmap_[{KEY_ENTER, MOD_NONE}] = [](Editor &e) { e.enter(); };
     chordmap_[{KEY_BACKSPACE, MOD_NONE}] = [](Editor &e) { e.backspace(); };
+    chordmap_[{KEY_UP, MOD_NONE}] = [](Editor &e) { e.move_up(); };
+    chordmap_[{KEY_DOWN, MOD_NONE}] = [](Editor &e) { e.move_down(); };
 }
 
 void Editor::move_left() { buffer_.move_cursor(-1); }
 
 void Editor::move_right() { buffer_.move_cursor(1); }
 
-void Editor::handle_up_key() { std::cout << "Up key pressed" << std::endl; }
+void Editor::move_up() { std::cout << "Up key pressed" << std::endl; }
 
-void Editor::handle_down_key() { std::cout << "Down key pressed" << std::endl; }
+void Editor::move_down() { std::cout << "Down key pressed" << std::endl; }
 
 void Editor::backspace() {
     // We create a static value to retain the last time an erase happened
