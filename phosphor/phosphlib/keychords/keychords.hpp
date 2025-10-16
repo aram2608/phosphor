@@ -19,16 +19,50 @@ enum Mod : std::uint8_t {
     // 1000
     MOD_SUPER = 1 << 3,
 };
-// We need to overload the bitwise | or operator so we can
+// We need to overload the bitwise operators so we can
 // Perform bitwise ops using our custom class
+
+// Overload to | our bit mask
+// 0100, 0010, then 0110 is kept and both bits are turned on
 inline Mod operator|(Mod a, Mod b) {
     return Mod(std::uint8_t(a) | std::uint8_t(b));
 }
 
-// We do the same for the |= operator
-inline Mod &operator|=(Mod &a, Mod b) {
-    a = Mod(std::uint8_t(a) | std::uint8_t(b));
+// Overload to |= our bit mask
+// Same as above but it modifies the left hand value
+inline Mod& operator|=(Mod& a, Mod b) {
+    a = a | b;
     return a;
+}
+
+// Overload to keep bits that are 1 in both operands
+// 0101 0100, only 0100 is kept
+inline Mod operator&(Mod a, Mod b) {
+    return Mod(std::uint8_t(a) & std::uint8_t(b));
+}
+
+// Same as above but modifies left hand value
+inline Mod& operator&=(Mod& a, Mod b) {
+    a = a & b;
+    return a;
+}
+
+// Overload to keep bits that are 1 in only one operand
+// 0110, 0100, then 0010 is kept, only if exactly one side has 1
+inline Mod operator^(Mod a, Mod b) {
+    return Mod(std::uint8_t(a) ^ std::uint8_t(b));
+}
+
+// Same as above but modifies left hand value
+inline Mod& operator^=(Mod& a, Mod b) {
+    a = a ^ b;
+    return a;
+}
+
+// Overload to flip bits
+// 1111 becomes 0000
+inline Mod operator~(Mod a) {
+    return Mod(~std::uint8_t(a));
 }
 
 // We create a small POD struct to store the key type and whether

@@ -119,10 +119,16 @@ void Editor::name_file() {
 void Editor::editing() {
     // We listen for keyboard events and return the code point
     for (int cp; (cp = GetCharPressed()) != 0;) {
+        // I will think of something later but for now, the catch below prevents
+        // shifted characters so we'll just jump over it for now
+        if (current_mods() & MOD_SHIFT) {
+            goto shifted;
+        }
         // We prevents Ctrl+S from inserting 's' or other combos
         if (current_mods() != MOD_NONE) {
             continue;
         }
+        shifted:
         // Otherwise can insert the character into the buffer
         if (cp >= 32 || cp == '\n' || cp == '\t') {
             buffer_.insert(cp);
