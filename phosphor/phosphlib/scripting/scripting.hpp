@@ -2,6 +2,7 @@
 #define SCRIPTING_HPP
 
 #include "keychords/keychords.hpp"
+#include "palette/palette.hpp"
 
 #include <cstdio>
 #include <filesystem>
@@ -9,6 +10,7 @@
 #include <raylib.h>
 #include <string>
 #include <unordered_map>
+#include <utility>
 
 #include <sol/sol.hpp>
 extern "C" {
@@ -34,7 +36,7 @@ class ScriptingVM {
   private:
     // Pointer to the Editor since it owns this class
     Editor *owner_;
-    sol::state lua;
+    sol::state lua_;
     std::unordered_map<int, int> keys_;
     std::unordered_map<KeyChord, sol::function, KeyChordHash> chordmap_;
 };

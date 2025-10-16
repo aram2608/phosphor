@@ -41,15 +41,15 @@ Editor::~Editor() { UnloadFont(text_font_); }
 void Editor::draw() {
     ui_.draw_ui();
     DrawTextEx(text_font_, buffer_.c_str(), Vector2{100, 70}, 25.0f, 2,
-               PhosphorGreen::ForestMoss);
+               ui_.text_color_);
     if (state_ == EditingState::Editing) {
         DrawTextEx(text_font_, file_.c_str(), ui_.fn_pos_, 25.0f, 2,
-                   PhosphorGreen::ForestMoss);
+                   ui_.title_color_);
     } else if (state_ == EditingState::Renaming) {
         DrawTextEx(text_font_, "Renaming: ", Vector2{400, 25}, 25.0f, 2,
-                   PhosphorGreen::ForestMoss);
+                   ui_.title_color_);
         DrawTextEx(text_font_, new_name_.c_str(), Vector2{550, 25}, 25.0f, 2,
-                   PhosphorGreen::ForestMoss);
+                   ui_.title_color_);
     }
 }
 
@@ -76,6 +76,15 @@ void Editor::insert_text(const std::string &text) {
     for (char c : text) {
         buffer_.insert(c);
     }
+}
+
+void Editor::pick_pallete(const int pallete) {
+    if (pallete > static_cast<int>(Pallete::Count) - 1 || pallete < 0) {
+        std::cout << "Invalid pallete" << std::endl;
+        return;
+    }
+    ui_.pallete_ = static_cast<Pallete>(pallete);
+    ui_.dispatch_pallete();
 }
 
 void Editor::name_file() {

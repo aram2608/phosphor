@@ -46,6 +46,7 @@ class Editor {
     // Main logic to poll for keyboard events
     void poll_input();
     void insert_text(const std::string &text);
+    void pick_pallete(const int pallete);
 
   private:
     void name_file();

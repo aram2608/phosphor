@@ -1,5 +1,4 @@
 #include "gap_buffer/gap_buffer.hpp"
-#include "gap_buffer.hpp"
 
 GapBuffer::GapBuffer(std::size_t start_capacity)
     // We initialize our buffer with the starting capacity and fill it with null
