@@ -39,11 +39,12 @@ Editor::~Editor() { UnloadFont(text_font_); }
 
 // Function to draw editor contents to window
 void Editor::draw() {
+    // We draw the main UI components
     ui_.draw_ui();
-    DrawTextEx(text_font_, buffer_.c_str(), Vector2{100, 70}, 25.0f, 2,
+    DrawTextEx(text_font_, buffer_.c_str(), Vector2{60, 70}, 25.0f, 2,
                ui_.text_color_);
     if (state_ == EditingState::Editing) {
-        DrawTextEx(text_font_, file_.c_str(), ui_.fn_pos_, 25.0f, 2,
+        DrawTextEx(ui_.title_font_, file_.c_str(), ui_.fn_pos_, 30.0f, 2,
                    ui_.title_color_);
     } else if (state_ == EditingState::Renaming) {
         DrawTextEx(text_font_, "Renaming: ", Vector2{400, 25}, 25.0f, 2,
@@ -78,12 +79,17 @@ void Editor::insert_text(const std::string &text) {
     }
 }
 
+// Helper exposed to the Lua VM for picking color palletes
 void Editor::pick_pallete(const int pallete) {
+    // We need to make sure the provided integer actually corresponds to one
+    // of the available palletes so we need to bounds check
     if (pallete > static_cast<int>(Pallete::Count) - 1 || pallete < 0) {
         std::cout << "Invalid pallete" << std::endl;
         return;
     }
+    // If it is in bounds we can cast it to the correct enum and assign
     ui_.pallete_ = static_cast<Pallete>(pallete);
+    // Afterwards we need to dispatch to the correct pallete type
     ui_.dispatch_pallete();
 }
 

@@ -1,7 +1,7 @@
 # Lua Base API Usage
 ---
 
-I switched to sol2 but I am keeping this here for future reference
+I switched to sol2 but I am keeping this here for future reference.
 
 ``` C++
 #include "scripting/scripting.hpp"

@@ -62,6 +62,12 @@ void ScriptingVM::push_api(sol::state &L) {
     L.new_usertype<Editor>("Editor", "insert_text", &Editor::insert_text,
                            "pick_pallete", &Editor::pick_pallete);
 
+    // We can pick a pallete at run time or create key binds, both options are
+    // nice
+    L["pick_pallete"] = [this](int pallete) mutable {
+        owner_->pick_pallete(pallete);
+    };
+
     // We can create a method to register commands to the editors keymap
     L["register_command"] = [this](int key, Mod m, sol::function f) {
         // We create a keychord object so we can store it in the method map
