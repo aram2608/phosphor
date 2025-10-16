@@ -2,11 +2,11 @@
 
 - [x] Draw Window
 - [x] Load Text
-- [] Create Gap Buffer
+- [x] Create Gap Buffer
 - [x] Update text drawn to screen
 - [x] Save new updated file
 - [] Create line indexing
 - [x] Update position using arrow keys - partially at least
 - [] Track mouse position
 - [] Update position with mouse clicks
-- [] Add Lua API for configurations/custom settings
+- [x] Add Lua API for configurations/custom settings
