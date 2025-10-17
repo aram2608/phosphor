@@ -45,8 +45,12 @@ class Editor {
     void draw();
     // Main logic to poll for keyboard events
     void poll_input();
+    // Method for inserting text that we expose to the Lua API
     void insert_text(const std::string &text);
-    void pick_pallete(const int pallete);
+    // Method for picking a palette exposed to the Lua API
+    void pick_palette(const int palette);
+    // Method for toggling between palette options exposed to the Lua API
+    void toggle_palette();
 
   private:
     void name_file();

@@ -2,7 +2,7 @@
 #define PALETTE_HPP
 #include <raylib.h>
 
-enum class Pallete { Green, Amber, Blue, Red, Cyan, Magenta, White, Count };
+enum class Palette { Green, Amber, Blue, Red, Cyan, Magenta, White, Count };
 
 struct PhosphorGreen {
     static constexpr Color DarkBg = {0x0d, 0x0f, 0x0a, 255};

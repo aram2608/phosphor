@@ -26,8 +26,8 @@ void UI::draw_header() const {
     DrawTextEx(title_font_, title_, title_pos_, 30.0f, 2, title_color_);
 }
 
-// We chose the color pallete given the pallete type
-void UI::dispatch_pallete() {
+// We chose the color palette given the palette type
+void UI::dispatch_palette() {
     // We need to create an alias for a pointer to one of the UI member
     // functions so we can make an array of the functions we dispatch to
     using ColorChooser = void (UI::*)();
@@ -36,10 +36,10 @@ void UI::dispatch_pallete() {
         &UI::phosphor_red,   &UI::phosphor_cyan,  &UI::phosphor_magenta,
         &UI::phosphor_white};
     // We dispatch to the relevant function
-    (this->*TABLE[static_cast<std::size_t>(pallete_)])();
+    (this->*TABLE[static_cast<std::size_t>(palette_)])();
 }
 
-// Helper to choose green color pallete
+// Helper to choose green color palette
 void UI::phosphor_green() {
     title_color_ = PhosphorGreen::LightGreen;
     ui_color_ = PhosphorGreen::SoftGreen;
@@ -47,7 +47,7 @@ void UI::phosphor_green() {
     text_color_ = PhosphorGreen::DarkGreen;
 }
 
-// Helper to choose amber color pallete
+// Helper to choose amber color palette
 void UI::phosphor_amber() {
     title_color_ = PhosphorAmber::PaleAmber;
     ui_color_ = PhosphorAmber::SoftAmber;
@@ -55,7 +55,7 @@ void UI::phosphor_amber() {
     text_color_ = PhosphorAmber::LightAmber;
 }
 
-// Helper to choose blue color pallete
+// Helper to choose blue color palette
 void UI::phosphor_blue() {
     title_color_ = PhosphorBlue::SoftBlue;
     ui_color_ = PhosphorBlue::MidBlue;
@@ -63,7 +63,7 @@ void UI::phosphor_blue() {
     text_color_ = PhosphorBlue::DeepBlue;
 }
 
-// Helper to choose red color pallete
+// Helper to choose red color palette
 void UI::phosphor_red() {
     title_color_ = PhosphorRed::BrightRed;
     ui_color_ = PhosphorRed::MidRed;
@@ -71,7 +71,7 @@ void UI::phosphor_red() {
     text_color_ = PhosphorRed::DarkCrimson;
 }
 
-// Helper to choose cyan color pallete
+// Helper to choose cyan color palette
 void UI::phosphor_cyan() {
     title_color_ = PhosphorCyan::AquaGlow;
     ui_color_ = PhosphorCyan::MidTeal;
@@ -79,7 +79,7 @@ void UI::phosphor_cyan() {
     text_color_ = PhosphorCyan::DeepOcean;
 }
 
-// Helper to choose magenta color pallete
+// Helper to choose magenta color palette
 void UI::phosphor_magenta() {
     title_color_ = PhosphorMagenta::BrightFuchsia;
     ui_color_ = PhosphorMagenta::MidPink;
@@ -87,7 +87,7 @@ void UI::phosphor_magenta() {
     text_color_ = PhosphorMagenta::DeepViolet;
 }
 
-// Helper to choose white/monochrome color pallete
+// Helper to choose white/monochrome color palette
 void UI::phosphor_white() {
     title_color_ = PhosphorWhite::SoftWhite;
     ui_color_ = PhosphorWhite::LightGrey;

@@ -32,11 +32,11 @@ void ScriptingVM::push_api(sol::state &L) {
     L.new_enum("Mod", "NONE", Mod::MOD_NONE, "CTRL", Mod::MOD_CTRL, "SHIFT",
                Mod::MOD_SHIFT, "ALT", Mod::MOD_ALT, "SUPER", Mod::MOD_SUPER);
 
-    // We are making a new enum for our color palletes
-    L.new_enum("Pallete", "Green", Pallete::Green, "Amber", Pallete::Amber,
-               "Blue", Pallete::Blue, "Red", Pallete::Red, "Cyan",
-               Pallete::Cyan, "Magenta", Pallete::Magenta, "White",
-               Pallete::White);
+    // We are making a new enum for our color Palettes
+    L.new_enum("Palette", "Green", Palette::Green, "Amber", Palette::Amber,
+               "Blue", Palette::Blue, "Red", Palette::Red, "Cyan",
+               Palette::Cyan, "Magenta", Palette::Magenta, "White",
+               Palette::White);
 
     // We create a table to store useful keys to override
     L.new_enum("keys",
@@ -63,12 +63,13 @@ void ScriptingVM::push_api(sol::state &L) {
     // Everytime Lua sees a reference to Editor, it will default to these
     // methods under the alias "Editor"
     L.new_usertype<Editor>("Editor", "insert_text", &Editor::insert_text,
-                           "pick_pallete", &Editor::pick_pallete);
+                           "pick_palette", &Editor::pick_palette,
+                           "toggle_palette", &Editor::toggle_palette);
 
-    // We can pick a pallete at run time or create key binds, both options are
+    // We can pick a palette at run time or create key binds, both options are
     // nice
-    L["pick_pallete"] = [this](int pallete) mutable {
-        owner_->pick_pallete(pallete);
+    L["pick_palette"] = [this](int palette) mutable {
+        owner_->pick_palette(palette);
     };
 
     // We can create a method to register commands to the editors keymap

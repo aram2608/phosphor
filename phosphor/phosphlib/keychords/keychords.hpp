@@ -30,7 +30,7 @@ inline Mod operator|(Mod a, Mod b) {
 
 // Overload to |= our bit mask
 // Same as above but it modifies the left hand value
-inline Mod& operator|=(Mod& a, Mod b) {
+inline Mod &operator|=(Mod &a, Mod b) {
     a = a | b;
     return a;
 }
@@ -42,7 +42,7 @@ inline Mod operator&(Mod a, Mod b) {
 }
 
 // Same as above but modifies left hand value
-inline Mod& operator&=(Mod& a, Mod b) {
+inline Mod &operator&=(Mod &a, Mod b) {
     a = a & b;
     return a;
 }
@@ -54,16 +54,14 @@ inline Mod operator^(Mod a, Mod b) {
 }
 
 // Same as above but modifies left hand value
-inline Mod& operator^=(Mod& a, Mod b) {
+inline Mod &operator^=(Mod &a, Mod b) {
     a = a ^ b;
     return a;
 }
 
 // Overload to flip bits
 // 1111 becomes 0000
-inline Mod operator~(Mod a) {
-    return Mod(~std::uint8_t(a));
-}
+inline Mod operator~(Mod a) { return Mod(~std::uint8_t(a)); }
 
 // We create a small POD struct to store the key type and whether
 // it is modified or not

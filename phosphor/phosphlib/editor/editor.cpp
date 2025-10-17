@@ -1,4 +1,5 @@
 #include "editor/editor.hpp"
+#include "editor.hpp"
 #include "palette/palette.hpp"
 
 // Helper method to decide if a mod key is currently applied
@@ -59,7 +60,8 @@ void Editor::poll_input() {
     // a void
     using IO = void (Editor::*)();
     // We make an array scoped to this function that stores the functions we
-    // want to poll for
+    // want to poll for, we make it static so that the table is remembered
+    // across calls
     static constexpr std::array<IO, 2> TABLE = {
         &Editor::editing,
         &Editor::name_file,
@@ -78,18 +80,33 @@ void Editor::insert_text(const std::string &text) {
     }
 }
 
-// Helper exposed to the Lua VM for picking color palletes
-void Editor::pick_pallete(const int pallete) {
+// Helper exposed to the Lua VM for picking color palettes
+void Editor::pick_palette(const int palette) {
     // We need to make sure the provided integer actually corresponds to one
-    // of the available palletes so we need to bounds check
-    if (pallete > static_cast<int>(Pallete::Count) - 1 || pallete < 0) {
-        std::cout << "Invalid pallete" << std::endl;
+    // of the available palettes so we need to bounds check
+    if (palette > static_cast<int>(Palette::Count) - 1 || palette < 0) {
+        std::cout << "Invalid palette" << std::endl;
         return;
     }
     // If it is in bounds we can cast it to the correct enum and assign
-    ui_.pallete_ = static_cast<Pallete>(pallete);
+    ui_.palette_ = static_cast<Palette>(palette);
     // Afterwards we need to dispatch to the correct pallete type
-    ui_.dispatch_pallete();
+    ui_.dispatch_palette();
+}
+
+// Helper exposed to Lua API for toggling between palletes
+void Editor::toggle_palette() {
+    // We need to define a static int to make sure it is remembered between
+    // calls
+    static int palette_idx = 0;
+    // We need to bounds check so we can reset back to the first palette after
+    // we reach the maximum number
+    if (palette_idx < static_cast<int>(Palette::Count) - 1) {
+        pick_palette(++palette_idx);
+    } else {
+        palette_idx = 0;
+        pick_palette(palette_idx);
+    }
 }
 
 void Editor::name_file() {
@@ -128,7 +145,7 @@ void Editor::editing() {
         if (current_mods() != MOD_NONE) {
             continue;
         }
-        shifted:
+    shifted:
         // Otherwise can insert the character into the buffer
         if (cp >= 32 || cp == '\n' || cp == '\t') {
             buffer_.insert(cp);
@@ -163,57 +180,27 @@ void Editor::bind() {
     chordmap_[{KEY_DOWN, MOD_NONE}] = [](Editor &e) { e.move_down(); };
 }
 
+// Method to move the cursor left
 void Editor::move_left() { buffer_.move_cursor(-1); }
 
+// Method to move the cursor right
 void Editor::move_right() { buffer_.move_cursor(1); }
 
+// TODO: Implement up moves
 void Editor::move_up() { std::cout << "Up key pressed" << std::endl; }
 
+// TODO: Implement down moves
 void Editor::move_down() { std::cout << "Down key pressed" << std::endl; }
 
-void Editor::backspace() {
-    // We create a static value to retain the last time an erase happened
-    // this will ensure it persits even when the function goes out of scope
-    static double last_erase_time = 0.0;
-    // We create a little buffer to slow down erasing contents
-    double erase_buffer = 0.15;
-    double current_time = GetTime();
+// Method to handle backspace, we simply erase back one char
+void Editor::backspace() { buffer_.erase_back(1); }
 
-    // We only erase if enough time has passed since last erase and the contents
-    // are not empty
-    if (current_time - last_erase_time >= erase_buffer && !buffer_.empty()) {
-        buffer_.erase_back(1);
-        last_erase_time = current_time;
-    }
-}
+// Method to handle enter, we simply push a new line
+void Editor::enter() { buffer_.insert('\n'); }
 
-void Editor::enter() {
-    // We make a little buffer to prevent spam new lines
-    static double last_enter_time = 0.0;
-    double enter_buffer = 0.15;
-    double current_time = GetTime();
-
-    // We only erase if enough time has passed since last erase and the contents
-    // are not empty
-    if (current_time - last_enter_time >= enter_buffer) {
-        buffer_.insert('\n');
-        last_enter_time = current_time;
-    }
-}
-
-void Editor::tab() {
-    // We make a little buffer to prevent spam tabs
-    static double last_tab_time = 0.0;
-    double tab_buffer = 0.15;
-    double current_time = GetTime();
-
-    // We only erase if enough time has passed since last erase and the buffer
-    // are not empty
-    if (current_time - last_tab_time >= tab_buffer) {
-        buffer_.insert('\t');
-        last_tab_time = current_time;
-    }
-}
+// Method to handle tab, we simply push a tab
+// can be problematic for Python so maybe need to offer a 4 space tab too
+void Editor::tab() { buffer_.insert('\t'); }
 
 // Function to save changed buffer
 void Editor::save() {

@@ -6,6 +6,7 @@
   actual text editor and its underlying methods.
   Currently supported functions are the following:
     ed:insert_text("string" : string)
+    ed:toggle_palette()
 
   ed:insert_text() inserts text at the current cursor point
 ]]
@@ -15,7 +16,11 @@ register_command(keys.KEY_H, Mod.CTRL, function(ed)
 end)
 
 register_command(keys.KEY_P, Mod.CTRL, function (ed)
-  ed:pick_pallete(Pallete.Magenta)
+  ed:pick_palette(Palette.Magenta)
+end)
+
+register_command(keys.KEY_T, Mod.CTRL, function (ed)
+  ed:toggle_palette()
 end)
 
 --[[
@@ -26,4 +31,4 @@ end)
     pick_pallete()
 ]]
 
-pick_pallete(Pallete.Blue)
+pick_palette(Palette.Blue)

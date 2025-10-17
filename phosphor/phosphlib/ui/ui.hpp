@@ -17,7 +17,7 @@ struct UI {
     void draw_ui() const;
     void draw_bg() const;
     void draw_header() const;
-    void dispatch_pallete();
+    void dispatch_palette();
     void phosphor_green();
     void phosphor_amber();
     void phosphor_blue();
@@ -30,7 +30,7 @@ struct UI {
     Color text_color_{PhosphorGreen::DarkGreen};
     Color ui_color_{PhosphorGreen::SoftGreen};
     Color bg_color_{PhosphorGreen::DarkBg};
-    Pallete pallete_{Pallete::Green};
+    Palette palette_{Palette::Green};
     const char *title_{"phosphor"};
 };
 
