@@ -39,14 +39,12 @@ class Editor {
   public:
     // Constructor for the editor class
     Editor(std::string contents, std::filesystem::path file);
-    // Destructor for the editor class
-    ~Editor();
     // Main method to draw to window
     void draw();
     // Main logic to poll for keyboard events
     void poll_input();
     // Method for inserting text that we expose to the Lua API
-    void insert_text(const std::string &text);
+    void insert_text(std::string text);
     // Method for picking a palette exposed to the Lua API
     void pick_palette(const int palette);
     // Method for toggling between palette options exposed to the Lua API
@@ -64,6 +62,7 @@ class Editor {
     void backspace();
     void enter();
     void tab();
+    void paste();
     ScriptingVM vm_;
     GapBuffer buffer_;
     std::unordered_map<KeyChord, Command, KeyChordHash> chordmap_;

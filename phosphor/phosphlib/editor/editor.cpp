@@ -31,16 +31,16 @@ Editor::Editor(std::string contents, std::filesystem::path file)
     state_ = EditingState::Editing;
 }
 
-// Destructor for the Editor class
-Editor::~Editor() {}
-
 // Function to draw editor contents to window
 void Editor::draw() {
     // We draw the main UI components
     ui_.draw_ui();
+    // We use the ui helper function to draw the buffer
     ui_.draw_buffer(buffer_.c_str());
+    // If we are editing we display the file name
     if (state_ == EditingState::Editing) {
         ui_.draw_fn(file_.c_str());
+        // If we are renaming we need to display the new name to the screen
     } else if (state_ == EditingState::Renaming) {
         ui_.draw_rename_fn(new_name_.c_str());
     }
@@ -50,6 +50,12 @@ void Editor::draw() {
 void Editor::poll_input() {
     // We make an alias to a function pointer for a member function that returns
     // a void
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        GetClipboardText();
+        Vector2 pos = GetMousePosition();
+        std::cout << "PosX: " << pos.x << " PosY: " << pos.y << std::endl;
+    }
+
     using IO = void (Editor::*)();
     // We make an array scoped to this function that stores the functions we
     // want to poll for, we make it static so that the table is remembered
@@ -65,13 +71,8 @@ void Editor::poll_input() {
 }
 
 // Wrapper method for inserting characters to the buffer
-// Useful for exposing inseration capabilites for Lua extensions
-void Editor::insert_text(const std::string &text) {
-    // We loop through each character and insert into buffer
-    for (char c : text) {
-        buffer_.insert(c);
-    }
-}
+// Useful for exposing insertion capabilites for Lua extensions
+void Editor::insert_text(std::string text) { buffer_.insert(text); }
 
 // Helper exposed to the Lua VM for picking color palettes
 void Editor::pick_palette(const int palette) {
@@ -196,6 +197,14 @@ void Editor::enter() { buffer_.insert('\n'); }
 // Method to handle tab, we simply push a tab
 // can be problematic for Python so maybe need to offer a 4 space tab too
 void Editor::tab() { buffer_.insert('\t'); }
+
+// Method to paste clip board contents
+void Editor::paste() {
+    // We need to make sure the contents are not empty
+    if (std::string contents = GetClipboardText(); !contents.empty()) {
+        buffer_.insert(contents);
+    }
+}
 
 // Function to save changed buffer
 void Editor::save() {

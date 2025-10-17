@@ -18,9 +18,9 @@ class GapBuffer {
     std::size_t size() const noexcept;
     bool empty() const noexcept;
     std::string str() const;
-
     const char *c_str() const;
     void insert(char c);
+    void insert(std::string str);
     void erase_back(std::size_t num_chars);
 
   private:
@@ -33,6 +33,7 @@ class GapBuffer {
     std::size_t right_len() const noexcept;
     void ensure_gap(std::size_t want);
     void move_gap_to(std::size_t pos);
+    void compute_cache() const;
     mutable std::string cached_str_;
     mutable bool cache_valid_{false};
 };

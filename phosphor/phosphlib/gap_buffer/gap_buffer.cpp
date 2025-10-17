@@ -1,4 +1,5 @@
 #include "gap_buffer/gap_buffer.hpp"
+#include "gap_buffer.hpp"
 
 GapBuffer::GapBuffer(std::size_t start_capacity)
     // We initialize our buffer with the starting capacity and fill it with null
@@ -71,20 +72,12 @@ std::string GapBuffer::str() const {
 
 // Function to return a C-string for compatability with C APIs
 const char *GapBuffer::c_str() const {
+    // We need to ensure the previously cached string is valid
     if (!cache_valid_) {
-        // We empty the contents to start from scratch
-        cached_str_.clear();
-        // We reserve enough size given the size of the buffer
-        cached_str_.reserve(size());
-        // We then append the buffered contents to the left of the gap
-        cached_str_.append(buf_.data(), gap_begin_);
-        // We do the same for the right side of the gap
-        cached_str_.append(buf_.data() + gap_end_, buf_.size() - gap_end_);
-        // We have to null terminate the string
-        cached_str_.push_back('\0');
-        // Since our string is reconstructed this string is valid
-        cache_valid_ = true;
+        // If now we need to recompute it
+        compute_cache();
     }
+    // Only then can we return the c str
     return cached_str_.c_str();
 }
 
@@ -96,6 +89,16 @@ void GapBuffer::insert(char c) {
     buf_[gap_begin_++] = c;
     // Since an edit was made we must rebuild the cached string
     cache_valid_ = false;
+}
+
+// Method to insert entire strings
+void GapBuffer::insert(std::string str) {
+    // This is just a wrapper of the single char method
+    // We loop over each character and insert one by one
+    // Not the most efficient but it'll for for now
+    for (char c : str) {
+        insert(c);
+    }
 }
 
 void GapBuffer::erase_back(std::size_t num_chars) {
@@ -199,4 +202,19 @@ void GapBuffer::move_gap_to(std::size_t pos) {
         gap_end_ += count;
     }
     cache_valid_ = false;
+}
+
+void GapBuffer::compute_cache() const {
+    // We empty the contents to start from scratch
+    cached_str_.clear();
+    // We reserve enough size given the size of the buffer
+    cached_str_.reserve(size());
+    // We then append the buffered contents to the left of the gap
+    cached_str_.append(buf_.data(), gap_begin_);
+    // We do the same for the right side of the gap
+    cached_str_.append(buf_.data() + gap_end_, buf_.size() - gap_end_);
+    // We have to null terminate the string
+    cached_str_.push_back('\0');
+    // Since our string is reconstructed this string is valid
+    cache_valid_ = true;
 }

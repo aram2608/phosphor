@@ -7,7 +7,7 @@
 #include <raylib.h>
 
 // Helper function to decide if a file has contents
-static std::string slurp_file(const std::filesystem::path &path) {
+static inline std::string slurp_file(const std::filesystem::path &path) {
     // We create an ifstream object
     std::ifstream file(path);
     // If the file cannot be opened we return an empty string
@@ -86,7 +86,7 @@ int main(int argc, const char **argv) {
     SetTargetFPS(120);
 
     // We create our editor instance
-    Editor editor = Editor(initial, file);
+    Editor editor{initial, file};
 
     // Load font
     while (!WindowShouldClose()) {
