@@ -73,7 +73,7 @@ int main(int argc, const char **argv) {
     SetTraceLogLevel(LOG_ERROR);
 
     // Harded screen params with offset
-    const int WIDTH = 800;
+    const int WIDTH = 1200;
     const int HEIGHT = 800;
 
     // Config flags for window - dont want to worry about that logic yet for the

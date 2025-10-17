@@ -9,14 +9,18 @@
 struct UI {
     UI();
     ~UI();
-    const Rectangle frame_{10, 10, 780, 780};
+    const Rectangle frame_{10, 10, 1180, 780};
     const Vector2 title_pos_{40, 25};
-    const Vector2 fn_pos_{600, 25};
+    const Vector2 fn_pos_{900, 25};
     const Vector2 header_ln_strt_{10, 60};
-    const Vector2 header_ln_end_{790, 60};
+    const Vector2 header_ln_end_{1190, 60};
+    const Vector2 rename_pos_{700, 25};
     void draw_ui() const;
     void draw_bg() const;
     void draw_header() const;
+    void draw_buffer(const char *str) const;
+    void draw_fn(const char *fn) const;
+    void draw_rename_fn(const char *fn) const;
     void dispatch_palette();
     void phosphor_green();
     void phosphor_amber();
@@ -26,6 +30,7 @@ struct UI {
     void phosphor_magenta();
     void phosphor_white();
     Font title_font_;
+    Font text_font_;
     Color title_color_{PhosphorGreen::LightGreen};
     Color text_color_{PhosphorGreen::DarkGreen};
     Color ui_color_{PhosphorGreen::SoftGreen};

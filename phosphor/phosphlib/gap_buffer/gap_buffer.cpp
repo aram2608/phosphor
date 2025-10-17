@@ -39,7 +39,7 @@ void GapBuffer::move_cursor(long long delta) {
     long long pos = static_cast<long long>(cursor());
     // We get the limit of our buffer
     long long limit = static_cast<long long>(size());
-    // We clamp the pos + delta and our lower bound is 0 and uper bound is
+    // We clamp the pos + delta and our lower bound is 0 and upper bound is
     // the size of the buffer this prevent us from going out of bounds
     long long new_pos = std::clamp(pos + delta, 0LL, limit);
     set_cursor(static_cast<std::size_t>(new_pos));
@@ -172,6 +172,7 @@ void GapBuffer::ensure_gap(std::size_t want) {
     // We assign the member variables to the new gap beginning and end
     gap_begin_ = new_gap_begin;
     gap_end_ = new_gap_end;
+    // We need to recalculate the cache
     cache_valid_ = false;
 }
 

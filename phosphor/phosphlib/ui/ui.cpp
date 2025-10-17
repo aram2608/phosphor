@@ -1,14 +1,20 @@
 #include "ui/ui.hpp"
+#include "ui.hpp"
 
 // UI Constructor
 UI::UI() {
     // We need to load in our font
     title_font_ = LoadFont(
         "JetBrainsMono-2.304/fonts/ttf/JetBrainsMono-ExtraBoldItalic.ttf");
+    text_font_ =
+        LoadFont("JetBrainsMono-2.304/fonts/ttf/JetBrainsMono-Medium.ttf");
 }
 
 // Destructor - We need to offload the font resources
-UI::~UI() { UnloadFont(title_font_); }
+UI::~UI() {
+    UnloadFont(title_font_);
+    UnloadFont(text_font_);
+}
 
 // Wrapper method to draw UI components
 void UI::draw_ui() const {
@@ -26,15 +32,29 @@ void UI::draw_header() const {
     DrawTextEx(title_font_, title_, title_pos_, 30.0f, 2, title_color_);
 }
 
+void UI::draw_buffer(const char *str) const {
+    DrawTextEx(text_font_, str, Vector2{60, 70}, 25.0f, 2, text_color_);
+}
+
+void UI::draw_fn(const char *fn) const {
+    DrawTextEx(title_font_, fn, fn_pos_, 30.0f, 2, title_color_);
+}
+
+void UI::draw_rename_fn(const char *fn) const {
+    DrawTextEx(text_font_, "Renaming: ", rename_pos_, 25.0f, 2, title_color_);
+    DrawTextEx(text_font_, fn, fn_pos_, 25.0f, 2, title_color_);
+}
+
 // We chose the color palette given the palette type
 void UI::dispatch_palette() {
     // We need to create an alias for a pointer to one of the UI member
     // functions so we can make an array of the functions we dispatch to
     using ColorChooser = void (UI::*)();
-    static std::array<ColorChooser, 7> TABLE = {
-        &UI::phosphor_green, &UI::phosphor_amber, &UI::phosphor_blue,
-        &UI::phosphor_red,   &UI::phosphor_cyan,  &UI::phosphor_magenta,
-        &UI::phosphor_white};
+    static std::array<ColorChooser, static_cast<std::size_t>(Palette::Count)>
+        TABLE = {&UI::phosphor_green, &UI::phosphor_amber,
+                 &UI::phosphor_blue,  &UI::phosphor_red,
+                 &UI::phosphor_cyan,  &UI::phosphor_magenta,
+                 &UI::phosphor_white};
     // We dispatch to the relevant function
     (this->*TABLE[static_cast<std::size_t>(palette_)])();
 }

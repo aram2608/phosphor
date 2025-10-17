@@ -25,9 +25,6 @@ static inline Mod current_mods() {
 // We also initialize a vector of keys we want to poll for
 Editor::Editor(std::string contents, std::filesystem::path file)
     : buffer_(contents), contents_(contents), file_(file), vm_(this) {
-    // We load the font from JetBrains
-    text_font_ =
-        LoadFont("JetBrainsMono-2.304/fonts/ttf/JetBrainsMono-Medium.ttf");
     // We bind the keymap in our initializer
     bind();
     vm_.load_init(std::filesystem::path("init.lua"));
@@ -35,22 +32,17 @@ Editor::Editor(std::string contents, std::filesystem::path file)
 }
 
 // Destructor for the Editor class
-Editor::~Editor() { UnloadFont(text_font_); }
+Editor::~Editor() {}
 
 // Function to draw editor contents to window
 void Editor::draw() {
     // We draw the main UI components
     ui_.draw_ui();
-    DrawTextEx(text_font_, buffer_.c_str(), Vector2{60, 70}, 25.0f, 2,
-               ui_.text_color_);
+    ui_.draw_buffer(buffer_.c_str());
     if (state_ == EditingState::Editing) {
-        DrawTextEx(ui_.title_font_, file_.c_str(), ui_.fn_pos_, 30.0f, 2,
-                   ui_.title_color_);
+        ui_.draw_fn(file_.c_str());
     } else if (state_ == EditingState::Renaming) {
-        DrawTextEx(text_font_, "Renaming: ", Vector2{400, 25}, 25.0f, 2,
-                   ui_.title_color_);
-        DrawTextEx(text_font_, new_name_.c_str(), Vector2{550, 25}, 25.0f, 2,
-                   ui_.title_color_);
+        ui_.draw_rename_fn(new_name_.c_str());
     }
 }
 
@@ -62,10 +54,11 @@ void Editor::poll_input() {
     // We make an array scoped to this function that stores the functions we
     // want to poll for, we make it static so that the table is remembered
     // across calls
-    static constexpr std::array<IO, 2> TABLE = {
-        &Editor::editing,
-        &Editor::name_file,
-    };
+    static std::array<IO, static_cast<std::size_t>(EditingState::Count)> TABLE =
+        {
+            &Editor::editing,
+            &Editor::name_file,
+        };
     // We then cast our state into a size_t so we can index the correct
     // method
     (this->*TABLE[static_cast<std::size_t>(state_)])();
@@ -109,6 +102,7 @@ void Editor::toggle_palette() {
     }
 }
 
+// Function to rename files
 void Editor::name_file() {
     // We listen for keyboard events and return the code point
     for (int code_point; (code_point = GetCharPressed()) != 0;) {
@@ -133,6 +127,7 @@ void Editor::name_file() {
     }
 }
 
+// Function to handle editting logic
 void Editor::editing() {
     // We listen for keyboard events and return the code point
     for (int cp; (cp = GetCharPressed()) != 0;) {

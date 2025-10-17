@@ -48,3 +48,4 @@ theme_idea.hpp
 build/
 
 .vscode/
+py.py

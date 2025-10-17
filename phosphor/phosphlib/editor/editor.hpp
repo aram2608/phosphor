@@ -68,7 +68,6 @@ class Editor {
     GapBuffer buffer_;
     std::unordered_map<KeyChord, Command, KeyChordHash> chordmap_;
     std::filesystem::path file_;
-    Font text_font_;
     std::string contents_;
     std::string new_name_{};
     EditingState state_;
