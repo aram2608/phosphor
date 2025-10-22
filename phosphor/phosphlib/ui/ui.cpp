@@ -32,14 +32,17 @@ void UI::draw_header() const {
     DrawTextEx(title_font_, title_, title_pos_, 30.0f, 2, title_color_);
 }
 
+// Method to draw the buffer contents onto the screen
 void UI::draw_buffer(const char *str) const {
-    DrawTextEx(text_font_, str, Vector2{60, 70}, 25.0f, 2, text_color_);
+    DrawTextEx(text_font_, str, buffer_pos_, 20.0f, 2, text_color_);
 }
 
+// Method to draw the filename to the screen
 void UI::draw_fn(const char *fn) const {
     DrawTextEx(title_font_, fn, fn_pos_, 30.0f, 2, title_color_);
 }
 
+// Method to draw the rename state to screen
 void UI::draw_rename_fn(const char *fn) const {
     DrawTextEx(text_font_, "Renaming: ", rename_pos_, 25.0f, 2, title_color_);
     DrawTextEx(text_font_, fn, fn_pos_, 25.0f, 2, title_color_);

@@ -3,6 +3,8 @@
 
 #include "palette/palette.hpp"
 #include <array>
+#include <iostream>
+#include <vector>
 
 #include <raylib.h>
 
@@ -15,6 +17,8 @@ struct UI {
     const Vector2 header_ln_strt_{10, 60};
     const Vector2 header_ln_end_{1190, 60};
     const Vector2 rename_pos_{700, 25};
+    const Vector2 buffer_pos_{60, 70};
+    const float line_idx_xpos_{15};
     void draw_ui() const;
     void draw_bg() const;
     void draw_header() const;

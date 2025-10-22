@@ -36,6 +36,7 @@ class GapBuffer {
     void compute_cache() const;
     mutable std::string cached_str_;
     mutable bool cache_valid_{false};
+    mutable bool idx_valid_{false};
 };
 
 #endif

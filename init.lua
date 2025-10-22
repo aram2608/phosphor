@@ -11,15 +11,15 @@
   ed:insert_text() inserts text at the current cursor point
 ]]
 
-register_command(keys.KEY_H, Mod.CTRL, function(ed)
+register_command(keys.KEY_H, Mod.SUPER, function(ed)
   ed:insert_text("hello world!")
 end)
 
-register_command(keys.KEY_P, Mod.CTRL, function (ed)
+register_command(keys.KEY_P, Mod.SUPER, function (ed)
   ed:pick_palette(Palette.Magenta)
 end)
 
-register_command(keys.KEY_T, Mod.CTRL, function (ed)
+register_command(keys.KEY_T, Mod.SUPER, function (ed)
   ed:toggle_palette()
 end)
 

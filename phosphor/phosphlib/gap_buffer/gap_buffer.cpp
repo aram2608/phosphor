@@ -1,11 +1,10 @@
 #include "gap_buffer/gap_buffer.hpp"
-#include "gap_buffer.hpp"
 
-GapBuffer::GapBuffer(std::size_t start_capacity)
+GapBuffer::GapBuffer(size_t start_capacity)
     // We initialize our buffer with the starting capacity and fill it with null
     // characters
     // We also set the start of the gap and end of the gap
-    : buf_(std::max<std::size_t>(start_capacity, 1), '\0'), gap_begin_(0),
+    : buf_(std::max<size_t>(start_capacity, 1), '\0'), gap_begin_(0),
       gap_end_(buf_.size()) {}
 
 GapBuffer::GapBuffer(const std::string &start_string)
@@ -16,7 +15,7 @@ GapBuffer::GapBuffer(const std::string &start_string)
      * our gap with no characters on the right side of the gap
      *          'h' 'e' 'l' 'l''o' -------THIS IS THE GAP----------
      */
-    : buf_(std::max<std::size_t>(start_string.size() * 2 + 16, 1), '\0') {
+    : buf_(std::max<size_t>(start_string.size() * 2 + 16, 1), '\0') {
     // We place the data at the start of the buffer using memcpy
     // void* memcpy(void* destination, const void* src, std::size_t num_bytes);
     std::memcpy(buf_.data(), start_string.data(), start_string.size());
@@ -27,14 +26,19 @@ GapBuffer::GapBuffer(const std::string &start_string)
 }
 
 // Basic helper to get the cursor position at the start of the gap
-std::size_t GapBuffer::cursor() const noexcept { return gap_begin_; }
+size_t GapBuffer::cursor() const noexcept { return gap_begin_; }
 
-void GapBuffer::set_cursor(std::size_t pos) {
-    if (pos > size())
+// Method to set the cursor position
+void GapBuffer::set_cursor(size_t pos) {
+    // We need to make sure the position is in bounds
+    if (pos > size()) {
         throw std::out_of_range("cursor out of range");
+    }
+    // We can then move the position
     move_gap_to(pos);
 }
 
+// Method to move the cursor
 void GapBuffer::move_cursor(long long delta) {
     // We get our cursors position
     long long pos = static_cast<long long>(cursor());
@@ -43,13 +47,11 @@ void GapBuffer::move_cursor(long long delta) {
     // We clamp the pos + delta and our lower bound is 0 and upper bound is
     // the size of the buffer this prevent us from going out of bounds
     long long new_pos = std::clamp(pos + delta, 0LL, limit);
-    set_cursor(static_cast<std::size_t>(new_pos));
+    set_cursor(static_cast<size_t>(new_pos));
 }
 
 // Method to return the size of the buffer contents
-std::size_t GapBuffer::size() const noexcept {
-    return buf_.size() - gap_size();
-}
+size_t GapBuffer::size() const noexcept { return buf_.size() - gap_size(); }
 
 // Method to test if the container is empty
 bool GapBuffer::empty() const noexcept { return size() == 0; }
@@ -74,7 +76,7 @@ std::string GapBuffer::str() const {
 const char *GapBuffer::c_str() const {
     // We need to ensure the previously cached string is valid
     if (!cache_valid_) {
-        // If now we need to recompute it
+        // If it is not, we need to recompute it
         compute_cache();
     }
     // Only then can we return the c str
@@ -101,53 +103,49 @@ void GapBuffer::insert(std::string str) {
     }
 }
 
-void GapBuffer::erase_back(std::size_t num_chars) {
+void GapBuffer::erase_back(size_t num_chars) {
     // We get the left left and do a small calculation to see
     // how much to delete
-    std::size_t left = left_len();
-    std::size_t to_del = std::min(num_chars, left);
+    size_t left = left_len();
+    size_t to_del = std::min(num_chars, left);
     // We grow the gap into the left block to delete
     gap_begin_ -= to_del;
     cache_valid_ = false;
 }
 
 // Method to return the size of the gap in the buffer
-std::size_t GapBuffer::gap_size() const noexcept {
-    return gap_end_ - gap_begin_;
-}
+size_t GapBuffer::gap_size() const noexcept { return gap_end_ - gap_begin_; }
 
 // Method to return the left side of the buffer
-std::size_t GapBuffer::left_len() const noexcept { return gap_begin_; }
+size_t GapBuffer::left_len() const noexcept { return gap_begin_; }
 
 // Method to return the right side of the buffer
-std::size_t GapBuffer::right_len() const noexcept {
-    return buf_.size() - gap_end_;
-}
+size_t GapBuffer::right_len() const noexcept { return buf_.size() - gap_end_; }
 
-void GapBuffer::ensure_gap(std::size_t want) {
+void GapBuffer::ensure_gap(size_t want) {
     // We test if our gap size is big enough and return if it is
     if (gap_size() >= want) {
         return;
     }
 
     // We store our old cap to calc the new cap
-    std::size_t old_cap = buf_.size();
+    size_t old_cap = buf_.size();
     // We calc how much space we need
-    std::size_t need = want - gap_size();
+    size_t need = want - gap_size();
     /*
      * We calc the new gap given the old cap and how much we need
      * We choose the max value between a simple doubling or adding our need
      * to old cap + 32, its abritrary but should give us enough space for most
      * editing processes
      */
-    std::size_t new_cap = std::max(old_cap * 2, old_cap + need + 32);
+    size_t new_cap = std::max(old_cap * 2, old_cap + need + 32);
 
     // We then make a tempory new buffer
     std::vector<char> new_buf(new_cap, '\0');
 
     // We then need to get the size of the left and right sides
-    std::size_t left = left_len();
-    std::size_t right = right_len();
+    size_t left = left_len();
+    size_t right = right_len();
 
     // We copy the left side to the beginning of the buffer
     if (left) {
@@ -157,8 +155,8 @@ void GapBuffer::ensure_gap(std::size_t want) {
     }
 
     // We save the new gap begnning and end
-    std::size_t new_gap_begin = left;
-    std::size_t new_gap_end = new_cap - right;
+    size_t new_gap_begin = left;
+    size_t new_gap_end = new_cap - right;
 
     // We copy the right most data to the end of the buffer
     if (right) {
@@ -179,7 +177,7 @@ void GapBuffer::ensure_gap(std::size_t want) {
     cache_valid_ = false;
 }
 
-void GapBuffer::move_gap_to(std::size_t pos) {
+void GapBuffer::move_gap_to(size_t pos) {
     // If the position is at the beginning we don't move
     if (pos == gap_begin_) {
         return;
@@ -187,7 +185,7 @@ void GapBuffer::move_gap_to(std::size_t pos) {
     // We test if the position is less than the beginning
     if (pos < gap_begin_) {
         // Move block [pos, gap_begin_) to end side just before gap_end_
-        std::size_t count = gap_begin_ - pos;
+        size_t count = gap_begin_ - pos;
         // Destination starts at gap_end_ - count
         std::memmove(buf_.data() + (gap_end_ - count), buf_.data() + pos,
                      count);
@@ -196,7 +194,7 @@ void GapBuffer::move_gap_to(std::size_t pos) {
     } else {
         // pos > gap_begin_: move block [gap_end_, gap_end_ + count) down to
         // gap_begin_
-        std::size_t count = pos - gap_begin_;
+        size_t count = pos - gap_begin_;
         std::memmove(buf_.data() + gap_begin_, buf_.data() + gap_end_, count);
         gap_begin_ += count;
         gap_end_ += count;
@@ -204,6 +202,7 @@ void GapBuffer::move_gap_to(std::size_t pos) {
     cache_valid_ = false;
 }
 
+// Helper method to cache the buffer contents into a string
 void GapBuffer::compute_cache() const {
     // We empty the contents to start from scratch
     cached_str_.clear();

@@ -60,14 +60,13 @@ void Editor::poll_input() {
     // We make an array scoped to this function that stores the functions we
     // want to poll for, we make it static so that the table is remembered
     // across calls
-    static std::array<IO, static_cast<std::size_t>(EditingState::Count)> TABLE =
-        {
-            &Editor::editing,
-            &Editor::name_file,
-        };
+    static std::array<IO, static_cast<size_t>(EditingState::Count)> TABLE = {
+        &Editor::editing,
+        &Editor::name_file,
+    };
     // We then cast our state into a size_t so we can index the correct
     // method
-    (this->*TABLE[static_cast<std::size_t>(state_)])();
+    (this->*TABLE[static_cast<size_t>(state_)])();
 }
 
 // Wrapper method for inserting characters to the buffer
