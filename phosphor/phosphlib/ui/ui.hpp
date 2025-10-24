@@ -19,20 +19,24 @@ struct UI {
     const Vector2 rename_pos_{700, 25};
     const Vector2 buffer_pos_{60, 70};
     const float line_idx_xpos_{15};
+    const float text_size_{20.0f};
+    const float header_size_{30.0f};
+    const float text_spacing_{2.0f};
     void draw_ui() const;
     void draw_bg() const;
     void draw_header() const;
     void draw_buffer(const char *str) const;
     void draw_fn(const char *fn) const;
     void draw_rename_fn(const char *fn) const;
+    void draw_cursor() const;
     void dispatch_palette();
-    void phosphor_green();
-    void phosphor_amber();
-    void phosphor_blue();
-    void phosphor_red();
-    void phosphor_cyan();
-    void phosphor_magenta();
-    void phosphor_white();
+    void phosphor_green() noexcept;
+    void phosphor_amber() noexcept;
+    void phosphor_blue() noexcept;
+    void phosphor_red() noexcept;
+    void phosphor_cyan() noexcept;
+    void phosphor_magenta() noexcept;
+    void phosphor_white() noexcept;
     Font title_font_;
     Font text_font_;
     Color title_color_{PhosphorGreen::LightGreen};
@@ -40,7 +44,7 @@ struct UI {
     Color ui_color_{PhosphorGreen::SoftGreen};
     Color bg_color_{PhosphorGreen::DarkBg};
     Palette palette_{Palette::Green};
-    const char *title_{"phosphor"};
+    const char *title_{"phosphor\0"};
 };
 
 #endif

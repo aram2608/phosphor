@@ -63,6 +63,7 @@ class Editor {
     void enter();
     void tab();
     void paste();
+    void move_to_mouse(Vector2 mouse_pos);
     ScriptingVM vm_;
     GapBuffer buffer_;
     std::unordered_map<KeyChord, Command, KeyChordHash> chordmap_;

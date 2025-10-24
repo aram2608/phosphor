@@ -1,5 +1,4 @@
 #include "editor/editor.hpp"
-#include "editor.hpp"
 #include "palette/palette.hpp"
 
 // Helper method to decide if a mod key is currently applied
@@ -51,9 +50,7 @@ void Editor::poll_input() {
     // We make an alias to a function pointer for a member function that returns
     // a void
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-        GetClipboardText();
-        Vector2 pos = GetMousePosition();
-        std::cout << "PosX: " << pos.x << " PosY: " << pos.y << std::endl;
+        move_to_mouse(GetMousePosition());
     }
 
     using IO = void (Editor::*)();
@@ -70,7 +67,7 @@ void Editor::poll_input() {
 }
 
 // Wrapper method for inserting characters to the buffer
-// Useful for exposing insertion capabilites for Lua extensions
+// Useful for exposing insertion capabilites for Lua extension
 void Editor::insert_text(std::string text) { buffer_.insert(text); }
 
 // Helper exposed to the Lua VM for picking color palettes
@@ -173,6 +170,7 @@ void Editor::bind() {
     chordmap_[{KEY_BACKSPACE, MOD_NONE}] = [](Editor &e) { e.backspace(); };
     chordmap_[{KEY_UP, MOD_NONE}] = [](Editor &e) { e.move_up(); };
     chordmap_[{KEY_DOWN, MOD_NONE}] = [](Editor &e) { e.move_down(); };
+    chordmap_[{KEY_V, MOD_CTRL}] = [](Editor &e) { e.paste(); };
 }
 
 // Method to move the cursor left
@@ -202,6 +200,20 @@ void Editor::paste() {
     // We need to make sure the contents are not empty
     if (std::string contents = GetClipboardText(); !contents.empty()) {
         buffer_.insert(contents);
+    }
+}
+
+void Editor::move_to_mouse(Vector2 mouse_pos) {
+    // We test if the click is above the text
+    if (mouse_pos.y < ui_.buffer_pos_.y) {
+        // We simply move to the start of the text
+        int index = buffer_.size();
+        buffer_.move_cursor(-index);
+    }
+
+    // We test if the click is to the left of the text
+    if (mouse_pos.x < ui_.buffer_pos_.x) {
+        std::cout << "Right of text" << std::endl;
     }
 }
 

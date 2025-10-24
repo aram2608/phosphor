@@ -68,6 +68,8 @@ void ScriptingVM::push_api(sol::state &L) {
 
     // We can pick a palette at run time or create key binds, both options are
     // nice
+    // We need to make the lambda mutable since by default any captured variable
+    // is constant, we can probably get with it here but better safe than sorry
     L["pick_palette"] = [this](int palette) mutable {
         owner_->pick_palette(palette);
     };
