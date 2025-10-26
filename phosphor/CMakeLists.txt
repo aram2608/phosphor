@@ -4,14 +4,14 @@ include(FetchContent)
 # Installing dependencies
 # We try to find using whatever package manager is available and fall back to fetch
 
-find_package(raylib 3.0)
+find_package(raylib CONFIG)
 if (NOT raylib_FOUND)
     message(STATUS "raylib not found. Fetching from source via FetchContent.")
     FetchContent_Declare(
         raylib_content
         GIT_REPOSITORY https://github.com/raysan5/raylib.git
         # Stable version
-        GIT_TAG 4.5.0
+        GIT_TAG master
     )
     FetchContent_MakeAvailable(raylib_content)
     set(RAYLIB_LINK_TARGET raylib)
@@ -42,6 +42,7 @@ endif()
 find_package(Lua)
 if (NOT LUA_FOUND)
     message(STATUS "Lua interpreter was not found. Scripting module may fail to compile or link.")
+    message(STATUS, "Attempting to fetch from source.")
     FetchContent_Declare(
         lua
         GIT_REPOSITORY "https://github.com/marovira/lua"
@@ -62,11 +63,12 @@ if (NOT sol2_FOUND)
     FetchContent_Declare(
         sol2_content
         GIT_REPOSITORY https://github.com/ThePhD/sol2.git
-        # Stable version
-        GIT_TAG v3.0.2
+        # Stable version, this is janky but v3.4.0 has a typo that prevents
+        # compilation
+        GIT_TAG main
     )
     FetchContent_MakeAvailable(sol2_content)
-    set(SOL2_INCLUDE_DIR ${sol2_content_SOURCE_DIR}/include)
+    set(SOL2_INCLUDE_DIR ${sol2_content_SOURCE_DIR}/include/)
 else()
     set(SOL2_INCLUDE_DIR ${sol2_INCLUDE_DIRS})
 endif()
