@@ -211,6 +211,15 @@ void Editor::move_to_mouse(Vector2 mouse_pos) {
         buffer_.move_cursor(-index);
     }
 
+    // TODO: Figure out how to transform this to a logical positon below text
+    // Currently the text is only measure by the actual number of characters
+    // without accounting for new lines so the position is off by a lot
+    if (mouse_pos.y > MeasureTextEx(ui_.text_font_, buffer_.c_str(),
+                                    ui_.text_size_, ui_.text_spacing_)
+                          .y) {
+        std::cout << "Below text" << std::endl;
+    }
+
     // We test if the click is to the left of the text
     if (mouse_pos.x < ui_.buffer_pos_.x) {
         std::cout << "Right of text" << std::endl;

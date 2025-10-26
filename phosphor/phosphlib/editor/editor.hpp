@@ -49,6 +49,10 @@ class Editor {
     void pick_palette(const int palette);
     // Method for toggling between palette options exposed to the Lua API
     void toggle_palette();
+    void backspace();
+    void enter();
+    void tab();
+    void paste();
 
   private:
     void name_file();
@@ -59,10 +63,6 @@ class Editor {
     void move_right();
     void move_up();
     void move_down();
-    void backspace();
-    void enter();
-    void tab();
-    void paste();
     void move_to_mouse(Vector2 mouse_pos);
     ScriptingVM vm_;
     GapBuffer buffer_;

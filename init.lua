@@ -7,11 +7,15 @@
   Currently supported functions are the following:
     ed:insert_text("string" : string)
     ed:toggle_palette()
+    ed:backspace()
+    ed:paste_text()
+    ed:new_line()
+    ed:tab()
 
   ed:insert_text() inserts text at the current cursor point
 ]]
 
-register_command(keys.KEY_H, Mod.SUPER, function(ed)
+register_command(keys.KEY_H, Mod.CTRL, function(ed)
   ed:insert_text("hello world!")
 end)
 
@@ -23,6 +27,10 @@ register_command(keys.KEY_T, Mod.SUPER, function (ed)
   ed:toggle_palette()
 end)
 
+register_command(keys.KEY_D, Mod.SUPER, function (ed)
+  ed:backspace()
+end)
+
 --[[
   Asides from bound functions, there are functions in the global scope that
   get execute at start time.
@@ -30,5 +38,3 @@ end)
     register_command()
     pick_pallete()
 ]]
-
-pick_palette(Palette.Blue)
