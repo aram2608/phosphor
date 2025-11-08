@@ -37,6 +37,7 @@ export VCPKG_ROOT
 
 cmake -B build \
     -S . \
+    # replace with your manager of choice
     -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
 
 cmake --build build

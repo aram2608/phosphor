@@ -8,7 +8,7 @@
 
 // ScriptingVM constructor - we pass in a ptr to the editor instance
 ScriptingVM::ScriptingVM(Editor *owner) : owner_(owner) {
-    // We load a lead library set
+    // We load a lean library set since we only need a couple features
     lua_.open_libraries(sol::lib::base, sol::lib::math, sol::lib::table);
     // We can now push our API to the VM
     push_api(lua_);

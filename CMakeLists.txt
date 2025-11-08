@@ -1,3 +1,5 @@
+# I would prefer to use a different cmake but some deps use 3.5, so this
+# prevents an error
 cmake_minimum_required(VERSION 3.5)
 project(phosphor
     LANGUAGES CXX
