@@ -1,10 +1,7 @@
 #include "../include/scripting.hpp"
 #include "../include/editor.hpp"
 
-// clang-format off
-    #define PUT(KEYSYM) \
-        #KEYSYM, KEYSYM
-// clang-format on
+#define PUT(KEYSYM) #KEYSYM, KEYSYM
 
 // ScriptingVM constructor - we pass in a ptr to the editor instance
 ScriptingVM::ScriptingVM(Editor *owner) : owner_(owner) {
