@@ -1,5 +1,5 @@
-#include "scripting/scripting.hpp"
-#include "editor/editor.hpp"
+#include "../include/scripting.hpp"
+#include "../include/editor.hpp"
 
 // clang-format off
     #define PUT(KEYSYM) \

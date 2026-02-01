@@ -1,12 +1,12 @@
 #ifndef UI_HPP
 #define UI_HPP
 
-#include "palette/palette.hpp"
+#include "palette.hpp"
 #include <array>
 #include <iostream>
 #include <vector>
 
-#include <raylib.h>
+#include "../vendor/raylib.h"
 
 struct UI {
     UI();

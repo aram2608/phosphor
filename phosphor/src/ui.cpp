@@ -1,5 +1,4 @@
-#include "ui/ui.hpp"
-#include "ui.hpp"
+#include "../include/ui.hpp"
 
 // UI Constructor
 UI::UI() {

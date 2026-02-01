@@ -1,27 +1,25 @@
 #ifndef SCRIPTING_HPP
 #define SCRIPTING_HPP
 
-#include "keychords/keychords.hpp"
-#include "palette/palette.hpp"
+#include "../vendor/sol.hpp"
+extern "C" {
+#include "lauxlib.h"
+#include "lua.h"
+#include "lualib.h"
+}
 
+#include "keychords.hpp"
+#include "palette.hpp"
+
+#include "../include/ranlib.h"
 #include <cstdio>
 #include <filesystem>
 #include <iostream>
-#include <raylib.h>
 #include <string>
 #include <unordered_map>
 #include <utility>
 
-#include <sol/sol.hpp>
-extern "C" {
-#include <lauxlib.h>
-#include <lua.h>
-#include <lualib.h>
-}
-
-// Forward declaration
 class Editor;
-
 class ScriptingVM {
     friend class Editor;
 

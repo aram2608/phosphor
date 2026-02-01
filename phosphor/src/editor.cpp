@@ -1,5 +1,5 @@
-#include "editor/editor.hpp"
-#include "palette/palette.hpp"
+#include "../include/editor.hpp"
+#include "../include/palette.hpp"
 
 // Helper method to decide if a mod key is currently applied
 static inline Mod current_mods() {

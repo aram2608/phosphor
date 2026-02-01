@@ -1,18 +1,18 @@
 #ifndef EDITOR_HPP
 #define EDITOR_HPP
 
-#include "gap_buffer/gap_buffer.hpp"
-#include "keychords/keychords.hpp"
-#include "scripting/scripting.hpp"
-#include "ui/ui.hpp"
+#include "gap_buffer.hpp"
+#include "keychords.hpp"
+#include "scripting.hpp"
+#include "ui.hpp"
 
+#include "../vendor/raylib.h"
 #include <array>
 #include <cstdint>
 #include <filesystem>
 #include <fstream>
 #include <functional>
 #include <iostream>
-#include <raylib.h>
 #include <string>
 #include <unordered_map>
 #include <vector>

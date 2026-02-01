@@ -1,6 +1,6 @@
 #ifndef PALETTE_HPP
 #define PALETTE_HPP
-#include <raylib.h>
+#include "../vendor/raylib.h"
 
 enum class Palette { Green, Amber, Blue, Red, Cyan, Magenta, White, Count };
 

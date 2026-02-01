@@ -1,24 +1,20 @@
-#include "../phosphlib/editor/editor.hpp"
-#include <cxxopts.hpp>
+#include "../include/editor.hpp"
+#include "../vendor/cxxopts.hpp"
+#include "../vendor/raylib.h"
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <ostream>
-#include <raylib.h>
 
 // Helper function to decide if a file has contents
 static inline std::string slurp_file(const std::filesystem::path &path) {
-    // We create an ifstream object
     std::ifstream file(path);
-    // If the file cannot be opened we return an empty string
     if (!file.is_open()) {
-        std::cout << "File could not be opened." << std::endl;
+        std::cerr << "File could not be opened." << std::endl;
         return "";
     }
-    // Read entire file into string using iterators
     std::string content((std::istreambuf_iterator<char>(file)),
                         std::istreambuf_iterator<char>());
-    // We can then close the file and return the contents
     file.close();
     return content;
 }
@@ -65,41 +61,24 @@ int main(int argc, const char **argv) {
         return 1;
     }
 
-    // We try and read the file, if it is empty we simply return an empty string
-    // otherwise we try and slurp its contents
     std::string initial = file.empty() ? std::string{} : slurp_file(file);
 
-    // We only display errors
     SetTraceLogLevel(LOG_ERROR);
-
-    // Harded screen params with offset
     const int WIDTH = 1200;
     const int HEIGHT = 800;
-
-    // Config flags for window - dont want to worry about that logic yet for the
-    // UI SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-
-    // Initialize window before loading GPU resources
     InitWindow(WIDTH, HEIGHT, "phosphor");
 
-    // Lock FPS to make the window less jumpy
     SetTargetFPS(120);
 
-    // We create our editor instance
     Editor editor{initial, file};
 
-    // Load font
     while (!WindowShouldClose()) {
-        // We poll keyboard input
         editor.poll_input();
-        // Draw contents to screen
         BeginDrawing();
-        // We draw updated contents
         editor.draw();
         EndDrawing();
     }
 
-    // Close window following execution
     CloseWindow();
     return 0;
 }
